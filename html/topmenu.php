@@ -27,7 +27,13 @@
 								?>
 								
                                 <li class="hidden-xs">
-                                    <a href="#" class="right-bar-toggle waves-effect"><?php if($cbanned==0) {echo'<i class="fa fa-comments"></i></a>';}else{echo'<i class="fa fa-microphone-slash"></i>';} ?>
+                                    <a href="#" class="right-bar-toggle waves-effect">
+<?php 								if($cbanned==0) {
+											echo'<i class="fa fa-comments"></i></a>';
+										} else {
+											echo'<i class="fa fa-microphone-slash"></i>';
+										}
+									?>
                                 </li>
 								<?php
 								if(isset($_SESSION["steamid"]))
@@ -41,14 +47,14 @@
                                         <li><a href="profile.php"><i class="ti-user m-r-5"></i> Profile</a></li>
                                         <li><a href="usersettings.php"><i class="ti-settings m-r-5"></i> Settings</a></li>
                                         <li><a href="userhistory.php"><i class="ti-book m-r-5"></i> History</a></li>
-                                        <li><a href="steamauth/logout.php"><i class="ti-power-off m-r-5"></i> Logout</a></li>
+                                        <li><a href="?logout"><i class="ti-power-off m-r-5"></i> Logout</a></li>
                                     </ul>
                                 </li>';
 								}
 								else
 								{
 
-									echo '<li class="hidden-xs" style="padding-top:15px">'.steamlogin().'</li>';
+									echo '<li class="hidden-xs" style="padding-top:15px">'.loginbutton().'</li>';
 								}
 								?>
                             </ul>

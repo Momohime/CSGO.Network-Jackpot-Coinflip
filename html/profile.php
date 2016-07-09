@@ -1,191 +1,174 @@
 <?php
-include ('link.php');
-include ('core.php');
-require_once('steamauth/steamauth.php');
-@include_once('steamauth/userInfo.php');
-if(isset($_SESSION["steamid"]))
-{
-	$time = time();
-    mysql_query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
-	$premium=fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
-	$banned=fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
-	$cbanned=fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
-	$mytrade = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
-	$admin = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
-	$name=$steamprofile['personaname'];
-	$name = mysql_real_escape_string($name);
-	if($name)
-	{
-		mysql_query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
-	}
-	if($banned==1)
-	{
-		$banby=fetchinfo("banby","users","steamid",$_SESSION["steamid"]);
-		$banend=fetchinfo("banend","users","steamid",$_SESSION["steamid"]);
-		$banreason=fetchinfo("banreason","users","steamid",$_SESSION["steamid"]);
-		if($banend!=-1)
-		{
-			$banendt=date('Y-m-d - H:i', $banend);
-			$bmsg='You have been banned from this site by '.$banby.'.<br>Your ban ends on '.$banendt.'.<br>Ban reason: '.$banreason.'.';
-		}
-		else if($banend==-1)
-		{
-			$bmsg='You have been banned from this site by '.$banby.'.<br>Your ban is permanent.<br>Ban reason: '.$banreason.'.';
-		}
+	include ('link.php');
+	include ('core.php');
+	require_once('steamauth/steamauth.php');
+	@include_once('steamauth/userInfo.php');
 
-		
+	$page="pf";
 
-		
-		if($banend>=$time || $banend==-1)
-		{
-			echo $bmsg;
-			die();
-		}
-		else
-		{
-			mysql_query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
-		}
-	}
-	$cbanstring='';
-	if($cbanned==1)
-	{
-		$cbanby=fetchinfo("cbanby","users","steamid",$_SESSION["steamid"]);
-		$cbanend=fetchinfo("cbanend","users","steamid",$_SESSION["steamid"]);
-		$cbanreason=fetchinfo("cbanreason","users","steamid",$_SESSION["steamid"]);
-		if($cbanend!=-1)
-		{
-			$cbanendt=date('Y-m-d - H:i', $cbanend);
-			$cbtt='Chat ban by '.$cbanby.'';
-			$cbmsg='Reason: '.$cbanreason.' - Ends on '.$cbanendt.'.';
+	if(isset($_SESSION["steamid"])) {
+		$time = time();
+
+	    $conn->query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
+	    $premium  = fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
+	    $banned   = fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
+	    $cbanned  = fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
+	    $mytrade  = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
+	    $admin    = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
+	    $name     = $steamprofile['personaname'];
+	    $name     = $conn->real_escape_string($name);
+
+    	if($name) {
+      		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
+   		}
+
+    	if($banned==1) {
+      		$banby    = fetchinfo("banby","users","steamid",$_SESSION["steamid"]);
+      		$banend   = fetchinfo("banend","users","steamid",$_SESSION["steamid"]);
+      		$banreason  = fetchinfo("banreason","users","steamid",$_SESSION["steamid"]);
+
+      		if($banend!=-1) {
+        		$banendt 	= date('Y-m-d - H:i', $banend);
+        		$bmsg 		= 'You have been banned from this site by '.$banby.'.<br>Your ban ends on '.$banendt.'.<br>Ban reason: '.$banreason.'.';
+      		} else if($banend==-1) {
+        		$bmsg 		= 'You have been banned from this site by '.$banby.'.<br>Your ban is permanent.<br>Ban reason: '.$banreason.'.';
+      		}
+
+      		if($banend>=$time || $banend==-1) {
+        		echo $bmsg;
+        		die();
+      		} else {
+        		$conn->query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+      		}
+      	}
+
+      	$cbanstring='';
+
+      	if($cbanned==1) {
+      		$cbanby=fetchinfo("cbanby","users","steamid",$_SESSION["steamid"]);
+      		$cbanend=fetchinfo("cbanend","users","steamid",$_SESSION["steamid"]);
+      		$cbanreason=fetchinfo("cbanreason","users","steamid",$_SESSION["steamid"]);
+
+      		if($cbanend!=-1) {
+        		$cbanendt=date('Y-m-d - H:i', $cbanend);
+        		$cbtt='Chat ban by '.$cbanby.'';
+        		$cbmsg='Reason: '.$cbanreason.' - Ends on '.$cbanendt.'.';
+      		} else if($cbanend==-1) {
+       			$cbtt='You have been banned from the chat by '.$banby.'';
+        		$cbmsg='Reason: '.$cbanreason.' - The ban is permanent.';
+      		}
+
+      		if($cbanend>=$time || $cbanend==-1) {
+        		$cbanstring="
+          			<script>
+            			$.Notification.notify('black', 'top center',
+                        	'".$cbtt."',
+                        	'".$cbmsg."'
+                        );
+          			</script>
+        		";
+        	} else {
+       			$conn->query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+       			$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+      		}
+    	}
+
+
+    	if($premium==1) {
+	 		$id 	= $_SESSION['steamid'];
+	 		$time 	= time();
+	 		$puntil = fetchinfo("puntil","users","steamid","$id");
+	    	if($puntil <= $time) {
+	      		$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
+	     		$conn->query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
+	    	}
+	 	}
+ 	} else {
+	    $premium  		= 0;
+	    $banned   		= 0;
+	    $cbanned  		= 0;
+	    $mytrade  		= '';
+	    $admin    		= 0;
+	    $name    	 	= '';
+	    $cbanstring 	= '';
+ 	}
+
+    if(isset($_GET["action"])) {
+    	if($_GET["action"] == "view") {
+    		$sid = $_GET["id"];
+    	}
+
+    	if($_GET["action"] != "view") {
+    		echo '<script>location.href="index.php" </script>';
+    	}
+    }
+
+    if(!isset($_GET["action"])) {
+    	if(isset($_SESSION["steamid"])) {
+    		$sid = $_SESSION['steamid'];
+    	} else {
+    		echo '<script>location.href="index.php" </script>';
+    	}
+    }
+
+    $sid 	= $conn->real_escape_string($sid);
+    $exists = fetchinfo("steamid","users","steamid",$sid);
+
+    if(!$exists) {
+    	echo '<script>location.href="index.php" </script>';
+    }
+
+	$name 		= fetchinfo("name","users","steamid",$sid);
+	$name 		= secureoutput($name);
+	$premium 	= fetchinfo("premium","users","steamid",$sid);
+	$avatar 	= fetchinfo("avatar","users","steamid",$sid);
+	$reg 		= fetchinfo("reg","users","steamid",$sid);
+	$gp 		= fetchinfo("games","users","steamid",$sid);
+	$gw 		= fetchinfo("gameswon","users","steamid",$sid);
+	$sdp 		= fetchinfo("skinssent","users","steamid",$sid);
+	$profit 	= fetchinfo("profit","users","steamid",$sid);
 	
-		}
-		else if($cbanend==-1)
-		{
-			$cbtt='You have been banned from the chat by '.$banby.'';
-			$cbmsg='Reason: '.$cbanreason.' - The ban is permanent.';
-		}
-		if($cbanend>=$time || $cbanend==-1)
-		{
-					$cbanstring="
-					<script>
-					$.Notification.notify('black', 'top center',
-                     '".$cbtt."',
-                     '".$cbmsg."');
-					 </script>
-					 ";
-		}
-		else
-		{
-			mysql_query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
-		}
-	}
-}
-
-
-if(isset($_GET["action"]))
-{
-	if($_GET["action"] == "view")
-	{
-		$sid = $_GET["id"];
-	}
-	if($_GET["action"] != "view")
-	{
-		echo '<script>location.href="index.php" </script>';
-	}
-
-}
-if(!isset($_GET["action"]))
-{
-	if(isset($_SESSION["steamid"]))
-	{
-		$sid= $_SESSION['steamid'];
-	}
-	else
-	{
-		echo '<script>location.href="index.php" </script>';
-	}
-}
-
-$sid=mysql_real_escape_string($sid);
-
-$exists=fetchinfo("steamid","users","steamid",$sid);
-
-if(!$exists)
-{
-	echo '<script>location.href="index.php" </script>';
-}
-
-	$name=fetchinfo("name","users","steamid",$sid);
-	$name=secureoutput($name);
-	$premium=fetchinfo("premium","users","steamid",$sid);
-	$avatar=fetchinfo("avatar","users","steamid",$sid);
-	$reg = fetchinfo("reg","users","steamid",$sid);
-	$gp=fetchinfo("games","users","steamid",$sid);
-	$gw=fetchinfo("gameswon","users","steamid",$sid);
-	$sdp=fetchinfo("skinssent","users","steamid",$sid);
-	$profit=fetchinfo("profit","users","steamid",$sid);
+	$banned 	= fetchinfo("ban","users","steamid",$sid);
+	$cbanned 	= fetchinfo("cban","users","steamid",$sid);
 	
-	$banned=fetchinfo("ban","users","steamid",$sid);
-	$cbanned=fetchinfo("cban","users","steamid",$sid);
+	$banby 		= fetchinfo("banby","users","steamid",$sid);
+	$banend 	= fetchinfo("banend","users","steamid",$sid);
+	$banreason 	= fetchinfo("banreason","users","steamid",$sid);
 	
-	$banby=fetchinfo("banby","users","steamid",$sid);
-	$banend=fetchinfo("banend","users","steamid",$sid);
-	$banreason=fetchinfo("banreason","users","steamid",$sid);
+	$cbanby 	= fetchinfo("cbanby","users","steamid",$sid);
+	$cbanend 	= fetchinfo("cbanend","users","steamid",$sid);
+	$cbanreason = fetchinfo("cbanreason","users","steamid",$sid);
 	
-	$cbanby=fetchinfo("cbanby","users","steamid",$sid);
-	$cbanend=fetchinfo("cbanend","users","steamid",$sid);
-	$cbanreason=fetchinfo("cbanreason","users","steamid",$sid);
-	
-	if($reg)
-	{
+	if($reg) {
 		$reg2date=date('Y-m-d', $reg);
-	}
-	else
-	{
+	} else {
 		$reg2date='Unknown';
 	}
-	if($gp==0  || $gw==0)
-	{
+
+	if($gp==0  || $gw==0) {
 		$wr=0;
+	} else {
+	 	$wr=($gw/$gp)*100;
 	}
-	else
-	{
-		$wr=($gw/$gp)*100;
-	}
+
 	$wr=round($wr);
-	if($profit>0)
-	{
+
+	if($profit>0) {
 		$ptext='<span class="oz"><font color="#A4D177" size="4">$'.$profit.'</font></span>';
 	}
-	if($profit==0)
-	{
+
+	if($profit==0) {
 		$ptext='<span class="oz"><font color="#D1D077" size="4">$'.$profit.'</font></span>';
 	}
-	if($profit<0)
-	{
+
+	if($profit<0) {
 		$profit=$profit*-1;
 		$ptext='<span class="oz"><font color="#D17777" size="4">-$'.$profit.'</font></span>';
 	}
-	
-	if($premium==1)
-	{
-	$id=$_SESSION['steamid'];
-	$time=time();
-	$puntil = fetchinfo("puntil","users","steamid","$id");
-	if($puntil<=$time)
-	{
-		
-		mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
-		mysql_query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
-		
-	}
-}
-
- ?>
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -276,166 +259,168 @@ if(!$exists)
                     <div class="container">
                       <div class="wraper container-fluid">
 				<?php
+				if(isset($_GET["act"])) {
 					if($_GET["act"] == "unban")
 					{
 						if($sid!=$_SESSION['steamid'])
 						{
-							mysql_query("UPDATE users SET `ban`='0' WHERE `steamid`='$sid'");
-							mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='$sid'");
-							mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='$sid'");
+							$conn->query("UPDATE users SET `ban`='0' WHERE `steamid`='$sid'");
+							$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='$sid'");
+							$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='$sid'");
 							$from=$_SERVER["HTTP_REFERER"];
 							echo '<script>location.href="'.$from.'" </script>';
 						}
 					}	
 			
-					if($_GET["act"] == "cunban")
-					{
-						mysql_query("UPDATE users SET `cban`='0' WHERE `steamid`='$sid'");
-						mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='$sid'");
-						mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='$sid'");
-						$from=$_SERVER["HTTP_REFERER"];
-						echo '<script>location.href="'.$from.'" </script>';
-					
-					}
-					if($admin==1)
-					{
-					echo'
-					<div class="row">
-                      <div class="col-md-12 col-lg-12">
-                        <div class="card-box m-t-20">
-							<h4 class="m-t-0 header-title"><b>Admin functions</b></h4>
-								<div class="p-20">';
-								
-								if($banned==0)
-								{
-									echo'
-									<font size="4"><b>Ban from the site</b></font>
-									<br>
-									<br>
-									<form class="form-inline" method="post" action="ban.php">
-										<div class="form-group">
-											<input type="text" class="form-control" id="bid" name="bid" placeholder="Steam ID" value="'.$sid.'">
-										</div>
+					if(isset($_GET['act'])) {
+						if($_GET["act"] == "cunban") {
+							$conn->query("UPDATE users SET `cban`='0' WHERE `steamid`='$sid'");
+							$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='$sid'");
+							$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='$sid'");
+							$from=$_SERVER["HTTP_REFERER"];
+							echo '<script>location.href="'.$from.'" </script>';
+						
+						}
+
+						if($admin==1) {
+							echo'
+							<div class="row">
+		                      <div class="col-md-12 col-lg-12">
+		                        <div class="card-box m-t-20">
+									<h4 class="m-t-0 header-title"><b>Admin functions</b></h4>
+										<div class="p-20">';
 										
-										<div class="form-group">
-											<input type="text" class="form-control" id="bh" name="bh" placeholder="Time(Minutes, -1=Perm)" value="">
-										</div>
-										
-										<div class="form-group">
-											<input type="text" class="form-control" id="br" name="br" placeholder="Reason" value="">
-										</div>
-										
-										<button value="submit" name="submit" id="submit" type="submit" class="btn btn-danger waves-effect waves-light m-l-10 btn-md">Ban</button>
-									</form>
-									';
-								}
-								else
-								{
-									$banby = fetchinfo("banby","users","steamid",$sid);
-									$banreason = fetchinfo("banreason","users","steamid",$sid);
-									$banend = fetchinfo("banend","users","steamid",$sid);
-									if($banend==-1)
-									{
-										$bant="The ban is permanent";
-									}
-									else
-									{
-										$bant=date('Y-m-d - H:i', $banend);
-									}
-									echo'<u>Chat Banned by:</u> <b>'.$banby.'</b> &ensp; <u>Ban Reason:</u> <b>'.$banreason.'</b> &ensp; <u>Banned until:</u> <b>'.$bant.'</b>';
-									echo'<br><br>';
-									echo'<a href="profile.php?action=view&id='.$sid.'&act=unban"><button class="btn btn-danger waves-effect waves-light">Unban User</button></a>';
-								}
-								echo'
-									<br>
-									<br>';
-								if($cbanned==0)
-								{
-									echo'
-									<font size="4"><b>Ban from the chat</b></font>
-									<br>
-									<br>
-									<form class="form-inline" method="post" action="cban.php">
-										<div class="form-group">
-											<input type="text" class="form-control" id="bid" name="bid" placeholder="Steam ID" value="'.$sid.'">
-										</div>
-										
-										<div class="form-group">
-											<input type="text" class="form-control" id="bh" name="bh" placeholder="Time(Minutes, -1=Perm)" value="">
-										</div>
-										
-										<div class="form-group">
-											<input type="text" class="form-control" id="br" name="br" placeholder="Reason" value="">
-										</div>
-										
-										<button value="submit" name="submit" id="submit" type="submit" class="btn btn-danger waves-effect waves-light m-l-10 btn-md">Ban</button>
-									</form>';
-								}
-								else
-								{
-									$cbanby = fetchinfo("cbanby","users","steamid",$sid);
-									$cbanreason = fetchinfo("cbanreason","users","steamid",$sid);
-									$cbanend = fetchinfo("cbanend","users","steamid",$sid);
-									if($cbanend==-1)
-									{
-										$cbant="The chat ban is permanent";
-									}
-									else
-									{
-										$cbant=date('Y-m-d - H:i', $cbanend);
-									}
-									echo'<u>Chat Banned by:</u> <b>'.$cbanby.'</b> &ensp; <u>Ban Reason:</u> <b>'.$cbanreason.'</b> &ensp; <u>Banned until:</u> <b>'.$cbant.'</b>';
-									echo'<br><br>';
-									echo'<a href="profile.php?action=view&id='.$sid.'&act=cunban"><button class="btn btn-danger waves-effect waves-light">Unban User</button></a>';
-								}
-									
-									
-									echo'
-									<br>
-									<br>';
-									if($premium==1)
-									{
+										if($banned==0)
+										{
 											echo'
-
-											<a href="profile.php?action=view&id='.$sid.'&act=unpr"><button class="btn btn-danger waves-effect waves-light">Revoke Premium</button></a>
-
+											<font size="4"><b>Ban from the site</b></font>
+											<br>
+											<br>
+											<form class="form-inline" method="post" action="ban.php">
+												<div class="form-group">
+													<input type="text" class="form-control" id="bid" name="bid" placeholder="Steam ID" value="'.$sid.'">
+												</div>
+												
+												<div class="form-group">
+													<input type="text" class="form-control" id="bh" name="bh" placeholder="Time(Minutes, -1=Perm)" value="">
+												</div>
+												
+												<div class="form-group">
+													<input type="text" class="form-control" id="br" name="br" placeholder="Reason" value="">
+												</div>
+												
+												<button value="submit" name="submit" id="submit" type="submit" class="btn btn-danger waves-effect waves-light m-l-10 btn-md">Ban</button>
+											</form>
 											';
-									}
-									else
-									{
+										}
+										else
+										{
+											$banby = fetchinfo("banby","users","steamid",$sid);
+											$banreason = fetchinfo("banreason","users","steamid",$sid);
+											$banend = fetchinfo("banend","users","steamid",$sid);
+											if($banend==-1)
+											{
+												$bant="The ban is permanent";
+											}
+											else
+											{
+												$bant=date('Y-m-d - H:i', $banend);
+											}
+											echo'<u>Chat Banned by:</u> <b>'.$banby.'</b> &ensp; <u>Ban Reason:</u> <b>'.$banreason.'</b> &ensp; <u>Banned until:</u> <b>'.$bant.'</b>';
+											echo'<br><br>';
+											echo'<a href="profile.php?action=view&id='.$sid.'&act=unban"><button class="btn btn-danger waves-effect waves-light">Unban User</button></a>';
+										}
+										echo'
+											<br>
+											<br>';
+										if($cbanned==0)
+										{
 											echo'
+											<font size="4"><b>Ban from the chat</b></font>
+											<br>
+											<br>
+											<form class="form-inline" method="post" action="cban.php">
+												<div class="form-group">
+													<input type="text" class="form-control" id="bid" name="bid" placeholder="Steam ID" value="'.$sid.'">
+												</div>
+												
+												<div class="form-group">
+													<input type="text" class="form-control" id="bh" name="bh" placeholder="Time(Minutes, -1=Perm)" value="">
+												</div>
+												
+												<div class="form-group">
+													<input type="text" class="form-control" id="br" name="br" placeholder="Reason" value="">
+												</div>
+												
+												<button value="submit" name="submit" id="submit" type="submit" class="btn btn-danger waves-effect waves-light m-l-10 btn-md">Ban</button>
+											</form>';
+										}
+										else
+										{
+											$cbanby = fetchinfo("cbanby","users","steamid",$sid);
+											$cbanreason = fetchinfo("cbanreason","users","steamid",$sid);
+											$cbanend = fetchinfo("cbanend","users","steamid",$sid);
+											if($cbanend==-1)
+											{
+												$cbant="The chat ban is permanent";
+											}
+											else
+											{
+												$cbant=date('Y-m-d - H:i', $cbanend);
+											}
+											echo'<u>Chat Banned by:</u> <b>'.$cbanby.'</b> &ensp; <u>Ban Reason:</u> <b>'.$cbanreason.'</b> &ensp; <u>Banned until:</u> <b>'.$cbant.'</b>';
+											echo'<br><br>';
+											echo'<a href="profile.php?action=view&id='.$sid.'&act=cunban"><button class="btn btn-danger waves-effect waves-light">Unban User</button></a>';
+										}
+											
+											
+											echo'
+											<br>
+											<br>';
+											if($premium==1)
+											{
+													echo'
 
-											<a href="profile.php?action=view&id='.$sid.'&act=pr"><button class="btn btn-success waves-effect waves-light">Give Premium</button></a>
-											';		
-									}
-									
-								echo'</div>
-							</div>
-                        </div>                      
-                    </div>';
-					}
-					
-					if($_GET["act"] == "pr")
-					{
-							$time=time();
-							$time=$time+ 2592000;
-							$mysid=$_SESSION['steamid'];
-							mysql_query("UPDATE users SET `premium`='1' WHERE `steamid`='$sid'");
-							mysql_query("UPDATE users SET `puntil`='$time' WHERE `steamid`='$sid'");
-							$from=$_SERVER["HTTP_REFERER"];
-							echo '<script>location.href="'.$from.'" </script>';
-						
-					}
-					if($_GET["act"] == "unpr")
-					{
+													<a href="profile.php?action=view&id='.$sid.'&act=unpr"><button class="btn btn-danger waves-effect waves-light">Revoke Premium</button></a>
 
-							$mysid=$_SESSION['steamid'];
-							mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$sid'");
-							$from=$_SERVER["HTTP_REFERER"];
-							echo '<script>location.href="'.$from.'" </script>';
-						
-					}
+													';
+											}
+											else
+											{
+													echo'
+
+													<a href="profile.php?action=view&id='.$sid.'&act=pr"><button class="btn btn-success waves-effect waves-light">Give Premium</button></a>
+													';		
+											}
+											
+										echo'</div>
+									</div>
+		                        </div>                      
+		                    </div>';
+							}
 					
+							if($_GET["act"] == "pr")
+							{
+									$time=time();
+									$time=$time+ 2592000;
+									$mysid=$_SESSION['steamid'];
+									$conn->query("UPDATE users SET `premium`='1' WHERE `steamid`='$sid'");
+									$conn->query("UPDATE users SET `puntil`='$time' WHERE `steamid`='$sid'");
+									$from=$_SERVER["HTTP_REFERER"];
+									echo '<script>location.href="'.$from.'" </script>';
+								
+							}
+							if($_GET["act"] == "unpr")
+							{
+
+									$mysid=$_SESSION['steamid'];
+									$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$sid'");
+									$from=$_SERVER["HTTP_REFERER"];
+									echo '<script>location.href="'.$from.'" </script>';
+								
+							}
+						}
+					}
                     ?>
                     <div class="row">
                         <div class="col-sm-12">

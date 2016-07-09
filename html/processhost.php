@@ -43,6 +43,8 @@ if(isset($_SESSION["steamid"]))
 			if(!$price || $price==0)
 			{
 				$error=1;
+			} else {
+				$error=0;
 			}
 		}
 
@@ -73,16 +75,16 @@ if(isset($_SESSION["steamid"]))
 					{
 						if($sum>=0.20)
 						{
-							$items=mysql_escape_string($items);
-							$sum=mysql_escape_string($sum);
-							$token=mysql_escape_string($token);
-							$val=mysql_escape_string($val);
-							$side=mysql_escape_string($side);
+							$items 	=$conn->escape_string($items);
+							$sum=$conn->escape_string($sum);
+							$token=$conn->escape_string($token);
+							$val=$conn->escape_string($val);
+							$side=$conn->escape_string($side);
 							
-							mysql_query("INSERT INTO `cfqueue` (`userid`,`value`,`hash`,`token`,`skins`,`status`,`flip`,`gap`,`type`,`askins`) VALUES ('$sid','$sum','$key','$token','$items','active','$side','$val','host','$askins')") or die(mysql_error());
-							$lastid=mysql_insert_id();
+							$conn->query("INSERT INTO `cfqueue` (`userid`,`value`,`hash`,`token`,`skins`,`status`,`flip`,`gap`,`type`,`askins`) VALUES ('$sid','$sum','$key','$token','$items','active','$side','$val','host','$askins')") or die(mysql_error());
+							$lastid = $conn->insert_id;
 							$newkey=$lastid.$key;
-							mysql_query("UPDATE `cfqueue` SET `hash`='$newkey' WHERE `id`='$lastid'");
+							$conn->query("UPDATE `cfqueue` SET `hash`='$newkey' WHERE `id`='$lastid'");
 							echo $newkey;
 						}
 						else

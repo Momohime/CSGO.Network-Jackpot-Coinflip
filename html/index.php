@@ -1,104 +1,105 @@
 <?php
-include ('link.php');
-include ('core.php');
-require_once('steamauth/steamauth.php');
-@include_once('steamauth/userInfo.php');
-$page="j1";
-if(isset($_SESSION["steamid"]))
-{
-	$time = time();
-    mysql_query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
-	$premium=fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
-	$banned=fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
-	$cbanned=fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
-	$mytrade = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
-	$admin = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
-	$name=$steamprofile['personaname'];
-	$name = mysql_real_escape_string($name);
-	if($name)
-	{
-		mysql_query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
-	}
-	if($banned==1)
-	{
-		$banby=fetchinfo("banby","users","steamid",$_SESSION["steamid"]);
-		$banend=fetchinfo("banend","users","steamid",$_SESSION["steamid"]);
-		$banreason=fetchinfo("banreason","users","steamid",$_SESSION["steamid"]);
-		if($banend!=-1)
-		{
-			$banendt=date('Y-m-d - H:i', $banend);
-			$bmsg='You have been banned from this site by '.$banby.'.<br>Your ban ends on '.$banendt.'.<br>Ban reason: '.$banreason.'.';
-		}
-		else if($banend==-1)
-		{
-			$bmsg='You have been banned from this site by '.$banby.'.<br>Your ban is permanent.<br>Ban reason: '.$banreason.'.';
-		}
+	include ('link.php');
+	include ('core.php');
+	require_once('steamauth/steamauth.php');
+	@include_once('steamauth/userInfo.php');
 
-		
+	$page="j1";
 
-		
-		if($banend>=$time || $banend==-1)
-		{
-			echo $bmsg;
-			die();
-		}
-		else
-		{
-			mysql_query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
-		}
-	}
-	$cbanstring='';
-	if($cbanned==1)
-	{
-		$cbanby=fetchinfo("cbanby","users","steamid",$_SESSION["steamid"]);
-		$cbanend=fetchinfo("cbanend","users","steamid",$_SESSION["steamid"]);
-		$cbanreason=fetchinfo("cbanreason","users","steamid",$_SESSION["steamid"]);
-		if($cbanend!=-1)
-		{
-			$cbanendt=date('Y-m-d - H:i', $cbanend);
-			$cbtt='Chat ban by '.$cbanby.'';
-			$cbmsg='Reason: '.$cbanreason.' - Ends on '.$cbanendt.'.';
-	
-		}
-		else if($cbanend==-1)
-		{
-			$cbtt='You have been banned from the chat by '.$banby.'';
-			$cbmsg='Reason: '.$cbanreason.' - The ban is permanent.';
-		}
-		if($cbanend>=$time || $cbanend==-1)
-		{
-					$cbanstring="
-					<script>
-					$.Notification.notify('black', 'top center',
-                     '".$cbtt."',
-                     '".$cbmsg."');
-					 </script>
-					 ";
-		}
-		else
-		{
-			mysql_query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
-		}
-	}
-}
-if($premium==1)
-{
-	$id=$_SESSION['steamid'];
-	$time=time();
-	$puntil = fetchinfo("puntil","users","steamid","$id");
-	if($puntil<=$time)
-	{
-		
-		mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
-		mysql_query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
-		
-	}
-}
- ?>
+	if(isset($_SESSION["steamid"])) {
+		$time = time();
+
+	    $conn->query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
+	    $premium  = fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
+	    $banned   = fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
+	    $cbanned  = fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
+	    $mytrade  = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
+	    $admin    = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
+	    $name     = $steamprofile['personaname'];
+	    $name     = $conn->real_escape_string($name);
+
+    	if($name) {
+      		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
+   		}
+
+    	if($banned==1) {
+      		$banby    = fetchinfo("banby","users","steamid",$_SESSION["steamid"]);
+      		$banend   = fetchinfo("banend","users","steamid",$_SESSION["steamid"]);
+      		$banreason  = fetchinfo("banreason","users","steamid",$_SESSION["steamid"]);
+
+      		if($banend!=-1) {
+        		$banendt 	= date('Y-m-d - H:i', $banend);
+        		$bmsg 		= 'You have been banned from this site by '.$banby.'.<br>Your ban ends on '.$banendt.'.<br>Ban reason: '.$banreason.'.';
+      		} else if($banend==-1) {
+        		$bmsg 		= 'You have been banned from this site by '.$banby.'.<br>Your ban is permanent.<br>Ban reason: '.$banreason.'.';
+      		}
+
+      		if($banend>=$time || $banend==-1) {
+        		echo $bmsg;
+        		die();
+      		} else {
+        		$conn->query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+      		}
+      	}
+
+      	$cbanstring='';
+
+      	if($cbanned==1) {
+      		$cbanby=fetchinfo("cbanby","users","steamid",$_SESSION["steamid"]);
+      		$cbanend=fetchinfo("cbanend","users","steamid",$_SESSION["steamid"]);
+      		$cbanreason=fetchinfo("cbanreason","users","steamid",$_SESSION["steamid"]);
+
+      		if($cbanend!=-1) {
+        		$cbanendt=date('Y-m-d - H:i', $cbanend);
+        		$cbtt='Chat ban by '.$cbanby.'';
+        		$cbmsg='Reason: '.$cbanreason.' - Ends on '.$cbanendt.'.';
+      		} else if($cbanend==-1) {
+       			$cbtt='You have been banned from the chat by '.$banby.'';
+        		$cbmsg='Reason: '.$cbanreason.' - The ban is permanent.';
+      		}
+
+      		if($cbanend>=$time || $cbanend==-1) {
+        		$cbanstring="
+          			<script>
+            			$.Notification.notify('black', 'top center',
+                        	'".$cbtt."',
+                        	'".$cbmsg."'
+                        );
+          			</script>
+        		";
+        	} else {
+       			$conn->query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+       			$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+      		}
+    	}
+
+    	if($premium==1) {
+	 		$id 	= $_SESSION['steamid'];
+	 		$time 	= time();
+	 		$puntil = fetchinfo("puntil","users","steamid","$id");
+	    	if($puntil <= $time) {
+	      		$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
+	     		$conn->query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
+	    	}
+	 	}
+
+    $steamid = $_SESSION['steamid'];;
+ 	} else {
+	    $premium  		= 0;
+	    $banned   		= 0;
+	    $cbanned  		= 0;
+	    $mytrade  		= '';
+	    $admin    		= 0;
+	    $name    	 	  = '';
+	    $cbanstring 	= '';
+      $steamid      = '';
+ 	}
+
+
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -112,7 +113,7 @@ if($premium==1)
         <title><?php echo $title; ?></title>
 
         <!--Morris Chart CSS -->
-		    <link rel="stylesheet" href="assets/plugins/morris/morris.css">
+        <link rel="stylesheet" href="assets/plugins/morris/morris.css">
         <script src="assets/js/modernizr.min.js"></script>
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
@@ -156,22 +157,21 @@ if($premium==1)
         <script src="chat/chat.js"></script>
         <link rel="stylesheet" href="chat/chat.css">
         <script src="assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
-		<script src="js/script.js"></script>
+   		<script src="js/script.js"></script>
+
         <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+       	 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        	<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
-	<link href="css/style.css" rel="stylesheet" type="text/css" />
-
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
     </head>
 
-
-    <body class="fixed-left"  onload="setInterval('chat.update()', 500)">
+	<body class="fixed-left"  onload="setInterval('chat.update()', 500)">
 	<?php echo $cbanstring; ?>
-	 <span class="msg"></span>
+   	<span class="msg"></span>
         <!-- Begin page -->
         <div id="wrapper">
 
@@ -198,21 +198,17 @@ if($premium==1)
                       <div class="row">
                             <div class="col-md-6 col-lg-3">
                                 <div class="widget-bg-color-icon card-box fadeInDown animated">
-									<div class="text-center">
-                                        <h3 class="text-dark"><b>Pot 1</b></h3>
-										<?php 
-										$minbet = fetchinfo("value","info","name","minbet");
-										$maxbet = fetchinfo("value","info","name","maxbet");
-										$maxskins = fetchinfo("value","info","name","maxitems");
-										
-										echo'<p class="text-muted"><b><u>Min Bet</u>: $'.$minbet.' &ensp; <u>Max Bet</u>: $'.$maxbet.' &ensp; <u>Max Skins</u>: '.$maxskins.'</b></p>';
-										
-										?>
-                                    </div>
+                  					<div class="text-center">
+                  						<h3 class="text-dark"><b>Pot 1</b></h3>
+<?php 										$minbet 	= fetchinfo("value","info","name","minbet");
+                    						$maxbet 	= fetchinfo("value","info","name","maxbet");
+                    						$maxskins 	= fetchinfo("value","info","name","maxitems");
+											
+											echo'<p class="text-muted"><b><u>Min Bet</u>: $'.$minbet.' &ensp; <u>Max Bet</u>: $'.$maxbet.' &ensp; <u>Max Skins</u>: '.$maxskins.'</b></p>';
+?>                                  </div>
                                     <div class="clearfix"></div>
                                 </div>
                             </div>
-
 
                             <div class="col-md-6 col-lg-3">
                                 <div class="widget-bg-color-icon card-box">
@@ -220,30 +216,24 @@ if($premium==1)
                                         <i class="md md-people text-white"></i>
                                     </div>
                                     <div class="text-right">
-									<?php
-									
-									 $result = mysql_query("SELECT id FROM games WHERE `starttime` > ".(time()-86400));
-									 $result2 = mysql_query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
-									 $rows=mysql_num_rows($result2);
-									  
-									?>
+<?php 									$result = $conn->query("SELECT id FROM games WHERE `starttime` > ".(time()-86400));
+                   						$result2 = $conn->query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
+                   						$rows= $result2->num_rows; ?>
                                         <h3 class="text-dark"><b class="counter"><?php echo $rows; ?></b></h3>
                                         <p class="text-muted">Players Today</p>
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
                             </div>
-							
+              
                             <div class="col-md-6 col-lg-3">
                                 <div class="widget-bg-color-icon card-box">
                                     <div class="bg-icon bg-info pull-left">
                                         <i class="md md-event text-white"></i>
                                     </div>
                                     <div class="text-right">
-									<?php
-									 $result2 = mysql_query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
-									?>
-                                        <h3 class="text-dark"><b class="counter"><?php echo mysql_num_rows($result); ?></b></h3>
+<?php 									$result2 = $conn->query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));  ?>
+                                        <h3 class="text-dark"><b class="counter"><?php echo $result->num_rows; ?></b></h3>
                                         <p class="text-muted">Games Today</p>
                                     </div>
                                     <div class="clearfix"></div>
@@ -256,19 +246,17 @@ if($premium==1)
                                         <i class="md md-attach-money text-white"></i>
                                     </div>
                                     <div class="text-right">
-									<?php
-										$result = mysql_query("SELECT * FROM games ORDER BY cost*1 DESC LIMIT 1");
-										$row = mysql_fetch_assoc($result);
-										$maxcost =  $row["cost"];
-										$maxcost=round($maxcost,2);
-									?>
+<?php 									$result 	= $conn->query("SELECT * FROM games ORDER BY cost*1 DESC LIMIT 1");
+					                    $row 		= $result ->fetch_assoc();
+					                    $maxcost 	=  $row["cost"];
+					                    $maxcost 	= round($maxcost,2); ?>
                                         <h3 class="text-dark">$<b class="counter"><?php echo $maxcost; ?></b></h3>
                                         <p class="text-muted">Biggest win</p>
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
                             </div>
-							
+              
                         </div>
             <div class="row">
               <div class="col-md-6 col-sm-6 col-lg-4 col-md-offset-4 col-sm-offset-4 col-lg-offset-4">
@@ -278,54 +266,54 @@ if($premium==1)
                                   <p class="text-muted">Pot: <font color="#598749"><span class="pot1"><?php include('pot1.php');?></span></font> </p>
                                 </div>
                             </div>
-						</div>
-						<div class="row">
+            </div>
+            <div class="row">
                             <div class="col-md-12 col-lg-12">
                                 <div class="widget-bg-color-icon card-box prog">
 
-									<?php include('prog1.php'); ?>
+                  <?php include('prog1.php'); ?>
                                        </div>
                                    </div>
-							</div>
+              </div>
 
                     <div class="row">
                     <div class="col-lg-12">
                     <div class="widget-bg-color-icon card-box">
 
-					<span class="wnr hidden"></span>
-					<span class="t1">
-					<?php include('table1.php'); ?>
-					</span>
+          <span class="wnr hidden"></span>
+          <span class="t1">
+          <?php include('table1.php'); ?>
+          </span>
                     <br>
-					<?php
-					if(isset($_SESSION["steamid"]))
-					{
-						if($mytrade)
-						{
-							echo'
-							<a href="'.$bot1url.'" target="_blank"><button type="button" class="btn btn-success waves-effect waves-light">Deposit now!</button></a>
-							';
-						}
-						else
-						{
-							echo'<a href="usersettings.php"><button type="button" class="btn btn-warning waves-effect waves-light">Set your Trade URL!</button></a>';
-						}
-					}
-					else
-					{
-						echo'<a href="?login"><button type="button" class="btn btn-danger waves-effect waves-light">Please log in!</button></a>';
-					}
-					
-					?>
-					
-					<br>
-					<br>
-					<br>
-					
-					
-					
-					<span class="hash1"><?php include('hash1.php')?></span>
-					
+          <?php
+          if(isset($_SESSION["steamid"]))
+          {
+            if($mytrade)
+            {
+              echo'
+              <a href="'.$bot1url.'" target="_blank"><button type="button" class="btn btn-success waves-effect waves-light">Deposit now!</button></a>
+              ';
+            }
+            else
+            {
+              echo'<a href="usersettings.php"><button type="button" class="btn btn-warning waves-effect waves-light">Set your Trade URL!</button></a>';
+            }
+          }
+          else
+          {
+            echo'<a href="?login"><button type="button" class="btn btn-danger waves-effect waves-light">Please log in!</button></a>';
+          }
+          
+          ?>
+          
+          <br>
+          <br>
+          <br>
+          
+          
+          
+          <span class="hash1"><?php include('hash1.php'); ?></span>
+          
                   </div>
 
                   </div>
@@ -348,11 +336,19 @@ if($premium==1)
             <!-- Right Sidebar -->
             <div class="side-bar right-bar nicescroll" style="overflow: visible">
               <script>
-      var name = "<?php echo $steamprofile['personaname'] ?>";
-      var ava = "<?php echo $steamprofile['avatarfull'] ?>";
-      var id = "<?php echo $_SESSION['steamid'] ?>";
-      var color = "<?php echo 'FF0000' ?>";
-      var admin = "<?php echo $admin ?>";
+           	<?php if(isset($_SESSION["steamid"])) { ?>
+              	var name 	= "<?php echo $steamprofile['personaname'] ?>";
+			    var ava 	= "<?php echo $steamprofile['avatarfull'] ?>";
+			    var id 		= "<?php echo $_SESSION['steamid'] ?>";
+			    var color 	= "<?php echo 'FF0000' ?>";
+			    var admin 	= "<?php echo $admin ?>";
+			<?php } else { ?>
+              	var name 	= "";
+			    var ava 	= "";
+			    var id 		= "";
+			    var color 	= "<?php echo 'FF0000' ?>";
+			    var admin 	= "0";
+			<?php } ?>
 
       // display name on page
       $("#name-area").html("You are: <span>" + name + "</span>");

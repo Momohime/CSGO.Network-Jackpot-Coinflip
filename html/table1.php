@@ -1,18 +1,18 @@
 <?php
-@include_once('link.php');
-@include_once('steamauth/steamauth.php');
-$cg = fetchinfo("value","info","name","current_game");
-$cb = fetchinfo("cost","games","id",$cg);
+	@include_once('link.php');
+	@include_once('steamauth/steamauth.php');
 
-$ms = fetchinfo("value","info","name","maxritem");
-$cs = fetchinfo("itemsnum","games","id",$cg);
+	$cg = fetchinfo("value","info","name","current_game");
+	$cb = fetchinfo("cost","games","id",$cg);
 
-$percent = $cs / $ms *100;
-	
-	$rs = mysql_query("SELECT * FROM `game".$cg."` GROUP BY `userid` ORDER BY `id` DESC");
+	$ms = fetchinfo("value","info","name","maxritem");
+	$cs = fetchinfo("itemsnum","games","id",$cg);
+
+	$percent = $cs / $ms *100;
+
+	$rs = $conn->query("SELECT * FROM `game".$cg."` GROUP BY `userid` ORDER BY `id` DESC");
 	$crs = "";
-	if(mysql_num_rows($rs) == 0) 
-	{
+	if($rs->num_rows == 0) {
 		/*$lg=$cg-1;
 		$lw = fetchinfo("winner","games","id",$lg);
 		$ld = fetchinfo("userid","games","id",$lg);
@@ -21,9 +21,7 @@ $percent = $cs / $ms *100;
 		$lc = fetchinfo("cost","games","id",$lg);
 		$la = fetchinfo("avatar","users","steamid",$ld);*/
 
-	} 
-	else
-	{
+	} else {
 		$crs.='<table class="table winnertable" style="width:100%; margin: 0 auto;">
 					<tbody class="row lato">';
 
@@ -35,12 +33,12 @@ $percent = $cs / $ms *100;
 			$userid = $row["userid"];
 			$username = fetchinfo("name","users","steamid",$userid);
 			$username=secureoutput($username);
-			$rs2 = mysql_query("SELECT SUM(value) AS value FROM `game".$cg."` WHERE `userid`='$userid'");						
+			$rs2 = $conn->query("SELECT SUM(value) AS value FROM `game".$cg."` WHERE `userid`='$userid'");						
 			$row = mysql_fetch_assoc($rs2);
 			$sumvalue = $row["value"];
 			$sumvalue=round($sumvalue,2);
 			
-			$rs3 = mysql_query("SELECT COUNT(value) AS items FROM `game".$cg."` WHERE `userid`='$userid'");						
+			$rs3 = $conn->query("SELECT COUNT(value) AS items FROM `game".$cg."` WHERE `userid`='$userid'");						
 			$rf = mysql_fetch_assoc($rs3);
 			$amount = $rf["items"];
 			
@@ -52,7 +50,7 @@ $percent = $cs / $ms *100;
 			&emsp;
 		';
 		
-		$rs4 = mysql_query("SELECT * FROM `game".$cg."` WHERE `userid`='$userid' ORDER BY `value` DESC");
+		$rs4 = $conn->query("SELECT * FROM `game".$cg."` WHERE `userid`='$userid' ORDER BY `value` DESC");
 			while($row33 = mysql_fetch_array($rs4))
 			{
 				$szinkod='#'.$row33["color"];

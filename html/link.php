@@ -1,25 +1,43 @@
 <?php
+	$conn = new mysqli("localhost", "root", ""); // MySQL Host , Username and password
 
-//session_start();
-$link = mysql_connect("", "", ""); // MySQL Host , Username and password
-$db_selected = mysql_select_db('', $link); // MySQL Database
-mysql_query("SET NAMES utf8");
+	/* check connection */
+	if (mysqli_connect_errno()) {
+		printf("Connect failed: %s\n", mysqli_connect_error());
+		exit();
+	}
 
-function fetchinfo($rowname,$tablename,$finder,$findervalue)
-{
-	if($finder == "1") $result = mysql_query("SELECT $rowname FROM $tablename");
-	else $result = mysql_query("SELECT $rowname FROM $tablename WHERE `$finder`='$findervalue'");
-	$row = mysql_fetch_assoc($result);
-	return $row[$rowname];
-}
+	/* change db */
+	$conn->select_db("github-csgonetwork"); 	// Database Name
 
-function secureoutput($string)
-{
-	$string = mysql_real_escape_string($string);
-	$string=htmlentities(strip_tags($string));
-	$string=str_replace('>', '', $string);
-	$string=str_replace('<', '', $string);
-	$string=htmlspecialchars($string);
-	return $string;
-}
+	/* change character set to utf8 */
+	if (!$conn->set_charset("utf8")) {
+		printf("Error loading character set utf8: %s\n", $mysqli->error);
+		exit();
+	}
+?>
+
+<?php
+	function fetchinfo($rowname,$tablename,$finder,$findervalue) {
+		global $conn;
+
+		if($finder == "1") {
+			$result = $conn->query("SELECT $rowname FROM $tablename");
+		} else {
+			$result = $conn->query("SELECT $rowname FROM $tablename WHERE `$finder`='$findervalue'");
+		}
+		$row = $result->fetch_assoc();
+		return $row[$rowname];
+	}
+
+	function secureoutput($string) {
+		global $conn;
+
+		$string = $conn->real_escape_string($string);
+		$string = htmlentities(strip_tags($string));
+		$string = str_replace('>', '', $string);
+		$string = str_replace('<', '', $string);
+		$string = htmlspecialchars($string);
+		return $string;
+	}
 ?>

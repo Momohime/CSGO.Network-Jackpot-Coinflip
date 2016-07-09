@@ -6,11 +6,16 @@
 
                         	<li class="text-muted menu-title">Navigation</li>
 							<?php
+                            $cfa = '';
+                            $cfd = '';
+                            $cfc = '';
+
 							$coinflip=1;
+
+
 							if($coinflip==1)
 							{
-								if($page=="cf")
-								{
+								if($page=="cf") {
 									$cfa='active';
 									$cfd='subdrop';
 									$cfc='style="display: block;"';
