@@ -1,61 +1,73 @@
 <?php
 ob_start();
-require ('openid.php');
 session_start();
+
 function logoutbutton() {
-    echo "<form action=\"steamauth/logout.php\" method=\"post\"><input value=\"Logout\" type=\"submit\" /></form>"; //logout button
+	echo "<form action='' method='get'><button name='logout' type='submit'>Logout</button></form>"; //logout button
 }
 
-function steamlogin()
-{
-try {
-    require("settings.php");
-    $openid = new LightOpenID($steamauth['domainname']);
+function loginbutton($buttonstyle = "large_no") {
+	$button['small'] = "small";
+	$button['large_no'] = "large_noborder";
+	$button['large'] = "large_border";
+	$button = "<a href='?login'><img src='http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_".$button[$buttonstyle].".png'></a>";
+	
+	echo $button;
+}
 
-    $button['small'] = "small";
-    $button['large_no'] = "large_noborder";
-    $button['large'] = "large_border";
-    $button = $button[$steamauth['buttonstyle']];
-    
-    if(!$openid->mode) {
-        if(isset($_GET['login'])) {
-            $openid->identity = 'http://steamcommunity.com/openid';
-            header('Location: ' . $openid->authUrl());
-        }
-
-    return "<form action=\"?login\" method=\"post\"> <input type=\"image\" src=\"http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_".$button.".png\"></form>";
-    }
-
-     elseif($openid->mode == 'cancel') {
-        echo 'User has canceled authentication!';
-    } else {
-        if($openid->validate()) { 
-                $id = $openid->identity;
-                $ptn = "/^http:\/\/steamcommunity\.com\/openid\/id\/(7[0-9]{15,25}+)$/";
-                preg_match($ptn, $id, $matches);
-              
-                $_SESSION['steamid'] = $matches[1]; 
-				include_once("link.php");
-				$query = mysql_query("SELECT * FROM users WHERE steamid='".$_SESSION['steamid']."'");
-				if (mysql_num_rows($query) == 0)
-				{
-					$time=time();
-					mysql_query("INSERT INTO users (steamid,reg) VALUES ('".$_SESSION['steamid']."','$time')") or die("MySQL ERROR: ".mysql_error());
+if (isset($_GET['login'])){
+	require 'openid.php';
+	try {
+		require 'SteamConfig.php';
+		$openid = new LightOpenID($steamauth['domainname']);
+		
+		if(!$openid->mode) {
+			$openid->identity = 'http://steamcommunity.com/openid';
+			header('Location: ' . $openid->authUrl());
+		} elseif ($openid->mode == 'cancel') {
+			echo 'User has canceled authentication!';
+		} else {
+			if($openid->validate()) { 
+				$id = $openid->identity;
+				$ptn = "/^http:\/\/steamcommunity\.com\/openid\/id\/(7[0-9]{15,25}+)$/";
+				preg_match($ptn, $id, $matches);
+				
+				$_SESSION['steamid'] = $matches[1];
+				if (!headers_sent()) {
+					header('Location: '.$steamauth['loginpage']);
+					exit;
+				} else {
+					?>
+					<script type="text/javascript">
+						window.location.href="<?=$steamauth['loginpage']?>";
+					</script>
+					<noscript>
+						<meta http-equiv="refresh" content="0;url=<?=$steamauth['loginpage']?>" />
+					</noscript>
+					<?php
+					exit;
 				}
-                //Determine the return to page. We substract "login&"" to remove the login var from the URL.
-                //"file.php?login&foo=bar" would become "file.php?foo=bar"
-                $returnTo = str_replace('login&', '', $_GET['openid_return_to']);
-                //If it didn't change anything, it means that there's no additionals vars, so remove the login var so that we don't get redirected to Steam over and over.
-                if($returnTo === $_GET['openid_return_to']) $returnTo = str_replace('?login', '', $_GET['openid_return_to']);
-                header('Location: '.$returnTo);
-        } else {
-                echo "User is not logged in.\n";
-        }
-
-    }
-} catch(ErrorException $e) {
-    echo $e->getMessage();
-}
+			} else {
+				echo "User is not logged in.\n";
+			}
+		}
+	} catch(ErrorException $e) {
+		echo $e->getMessage();
+	}
 }
 
+if (isset($_GET['logout'])){
+	require 'SteamConfig.php';
+	session_unset();
+	session_destroy();
+	header('Location: '.$steamauth['logoutpage']);
+	exit;
+}
+
+if (isset($_GET['update'])){
+	unset($_SESSION['steam_uptodate']);
+	require 'userInfo.php';
+	header('Location: '.$_SERVER['PHP_SELF']);
+	exit;
+}
 ?>
