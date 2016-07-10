@@ -1,105 +1,105 @@
 <?php
-error_reporting(0);
-include ('link.php');
-include ('core.php');
-require_once('steamauth/steamauth.php');
-@include_once('steamauth/userInfo.php');
-$page="j1";
-if(isset($_SESSION["steamid"]))
-{
-	$time = time();
-    mysql_query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
-	$premium=fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
-	$banned=fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
-	$cbanned=fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
-	$mytrade = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
-	$admin = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
-	$name=$steamprofile['personaname'];
-	$name = mysql_real_escape_string($name);
-	if($name)
-	{
-		mysql_query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
-	}
-	if($banned==1)
-	{
-		$banby=fetchinfo("banby","users","steamid",$_SESSION["steamid"]);
-		$banend=fetchinfo("banend","users","steamid",$_SESSION["steamid"]);
-		$banreason=fetchinfo("banreason","users","steamid",$_SESSION["steamid"]);
-		if($banend!=-1)
-		{
-			$banendt=date('Y-m-d - H:i', $banend);
-			$bmsg='You have been banned from this site by '.$banby.'.<br>Your ban ends on '.$banendt.'.<br>Ban reason: '.$banreason.'.';
-		}
-		else if($banend==-1)
-		{
-			$bmsg='You have been banned from this site by '.$banby.'.<br>Your ban is permanent.<br>Ban reason: '.$banreason.'.';
-		}
+	include ('link.php');
+	include ('core.php');
+	require_once('steamauth/steamauth.php');
+	@include_once('steamauth/userInfo.php');
 
-		
+	$page="j1";
 
-		
-		if($banend>=$time || $banend==-1)
-		{
-			echo $bmsg;
-			die();
-		}
-		else
-		{
-			mysql_query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
-		}
-	}
-	$cbanstring='';
-	if($cbanned==1)
-	{
-		$cbanby=fetchinfo("cbanby","users","steamid",$_SESSION["steamid"]);
-		$cbanend=fetchinfo("cbanend","users","steamid",$_SESSION["steamid"]);
-		$cbanreason=fetchinfo("cbanreason","users","steamid",$_SESSION["steamid"]);
-		if($cbanend!=-1)
-		{
-			$cbanendt=date('Y-m-d - H:i', $cbanend);
-			$cbtt='Chat ban by '.$cbanby.'';
-			$cbmsg='Reason: '.$cbanreason.' - Ends on '.$cbanendt.'.';
-	
-		}
-		else if($cbanend==-1)
-		{
-			$cbtt='You have been banned from the chat by '.$banby.'';
-			$cbmsg='Reason: '.$cbanreason.' - The ban is permanent.';
-		}
-		if($cbanend>=$time || $cbanend==-1)
-		{
-					$cbanstring="
-					<script>
-					$.Notification.notify('black', 'top center',
-                     '".$cbtt."',
-                     '".$cbmsg."');
-					 </script>
-					 ";
-		}
-		else
-		{
-			mysql_query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
-		}
-	}
-}
-if($premium==1)
-{
-	$id=$_SESSION['steamid'];
-	$time=time();
-	$puntil = fetchinfo("puntil","users","steamid","$id");
-	if($puntil<=$time)
-	{
-		
-		mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
-		mysql_query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
-		
-	}
-}
- ?>
+	if(isset($_SESSION["steamid"])) {
+		$time = time();
+
+	    $conn->query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
+	    $premium  = fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
+	    $banned   = fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
+	    $cbanned  = fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
+	    $mytrade  = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
+	    $admin    = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
+	    $name     = $steamprofile['personaname'];
+	    $name     = $conn->real_escape_string($name);
+
+    	if($name) {
+      		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
+   		}
+
+    	if($banned==1) {
+      		$banby    = fetchinfo("banby","users","steamid",$_SESSION["steamid"]);
+      		$banend   = fetchinfo("banend","users","steamid",$_SESSION["steamid"]);
+      		$banreason  = fetchinfo("banreason","users","steamid",$_SESSION["steamid"]);
+
+      		if($banend!=-1) {
+        		$banendt 	= date('Y-m-d - H:i', $banend);
+        		$bmsg 		= 'You have been banned from this site by '.$banby.'.<br>Your ban ends on '.$banendt.'.<br>Ban reason: '.$banreason.'.';
+      		} else if($banend==-1) {
+        		$bmsg 		= 'You have been banned from this site by '.$banby.'.<br>Your ban is permanent.<br>Ban reason: '.$banreason.'.';
+      		}
+
+      		if($banend>=$time || $banend==-1) {
+        		echo $bmsg;
+        		die();
+      		} else {
+        		$conn->query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+      		}
+      	}
+
+      	$cbanstring='';
+
+      	if($cbanned==1) {
+      		$cbanby=fetchinfo("cbanby","users","steamid",$_SESSION["steamid"]);
+      		$cbanend=fetchinfo("cbanend","users","steamid",$_SESSION["steamid"]);
+      		$cbanreason=fetchinfo("cbanreason","users","steamid",$_SESSION["steamid"]);
+
+      		if($cbanend!=-1) {
+        		$cbanendt=date('Y-m-d - H:i', $cbanend);
+        		$cbtt='Chat ban by '.$cbanby.'';
+        		$cbmsg='Reason: '.$cbanreason.' - Ends on '.$cbanendt.'.';
+      		} else if($cbanend==-1) {
+       			$cbtt='You have been banned from the chat by '.$banby.'';
+        		$cbmsg='Reason: '.$cbanreason.' - The ban is permanent.';
+      		}
+
+      		if($cbanend>=$time || $cbanend==-1) {
+        		$cbanstring="
+          			<script>
+            			$.Notification.notify('black', 'top center',
+                        	'".$cbtt."',
+                        	'".$cbmsg."'
+                        );
+          			</script>
+        		";
+        	} else {
+       			$conn->query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+        		$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+       			$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+      		}
+    	}
+
+    	if($premium==1) {
+	 		$id 	= $_SESSION['steamid'];
+	 		$time 	= time();
+	 		$puntil = fetchinfo("puntil","users","steamid","$id");
+	    	if($puntil <= $time) {
+	      		$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
+	     		$conn->query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
+	    	}
+	 	}
+
+    $steamid = $_SESSION['steamid'];;
+ 	} else {
+	    $premium  		= 0;
+	    $banned   		= 0;
+	    $cbanned  		= 0;
+	    $mytrade  		= '';
+	    $admin    		= 0;
+	    $name    	 	  = '';
+	    $cbanstring 	= '';
+      $steamid      = '';
+ 	}
+
+
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -200,15 +200,16 @@ if($premium==1)
      				<div class="row">
 <?php
 
-	$rs1 = mysql_query("SELECT profit,steamid,name,avatar FROM `users` GROUP BY profit DESC LIMIT 1");						
-	$row = mysql_fetch_row($rs1);
-	$profit = round($row[0],2);
-	$steamid = $row[1];
-	$name = $row[2];
-	$name=secureoutput($name);
-	$avatar = $row[3];	
+	$rs1 = $conn->query("SELECT profit,steamid,name,avatar FROM `users` GROUP BY profit DESC LIMIT 1");						
+	$row = $rs1->fetch_assoc();
 	
-		echo'     					
+	$profit 	= round($row['profit'],2);
+	$steamid 	= $row['steamid'];
+	$name 		= $row['name'];
+	$name 		= secureoutput($name);
+	$avatar 	= $row['avatar'];
+
+			echo'     					
 			<div class="col-md-4 col-lg-4">
 				<div class="widget-bg-color-icon card-box">
 						<a href="profile.php?action=view&id='.$steamid.'" target="_BLANK"><img src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/e3/'.$avatar.'" width="100px" alt="user-img" class="img-circle hoverZoomLink">
@@ -219,13 +220,14 @@ if($premium==1)
 			</div>
 		';
 
-	$rs1 = mysql_query("SELECT won,steamid,name,avatar FROM `users` GROUP BY won DESC LIMIT 1");						
-	$row = mysql_fetch_row($rs1);
-	$won = round($row[0],2);
-	$steamid = $row[1];
-	$name = $row[2];
-	$name=secureoutput($name);
-	$avatar = $row[3];	
+	$rs1 = $conn->query("SELECT won,steamid,name,avatar FROM `users` GROUP BY won DESC LIMIT 1");						
+	$row = $rs1->fetch_assoc();
+
+	$won 		= round($row['won'],2);
+	$steamid 	= $row['steamid'];
+	$name 		= $row['name'];
+	$name 		= secureoutput($name);
+	$avatar 	= $row['avatar'];	
 	
 		echo'     					
 			<div class="col-md-4 col-lg-4">
@@ -238,18 +240,21 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs0 = mysql_query("SELECT cost,userid FROM `games` ORDER BY cost DESC");						
-	$row = mysql_fetch_row($rs0);
-	$won=round($row[0],2);
-	$userid=$row[1];
+	$rs0 = $conn->query("SELECT cost,userid FROM `games` ORDER BY cost DESC");						
+	$row = $rs0->fetch_assoc();
+
+	$won 	= round($row['cost'],2);
+	$userid = $row['userid'];
 	
-	$rs1 = mysql_query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
-	$row = mysql_fetch_row($rs1);
-	$steamid = $row[0];
-	$name = $row[1];
-	$name=secureoutput($name);
-	$avatar = $row[2];
+	$rs1 = $conn->query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
+	$row = $rs1->fetch_assoc();
+	$steamid 	= $row['steamid'];
+	$name 		= $row['name'];
+	$name 		= secureoutput($name);
+	$avatar 	= $row['avatar'];	
 	
+	
+
 		echo'     					
 			<div class="col-md-4 col-lg-4">
 				<div class="widget-bg-color-icon card-box">
@@ -261,19 +266,23 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs0 = mysql_query("SELECT percent,cost,userid FROM `games` WHERE percent!='' ORDER BY `percent` ASC");						
-	$row = mysql_fetch_row($rs0);
-	$percent=$row[0];
-	$percent=round($percent,2);
-	$won=round($row[1],2);
-	$userid=$row[2];
+	$rs0 = $conn->query("SELECT percent,cost,userid FROM `games` WHERE percent!='' ORDER BY `percent` ASC");						
+	$row = $rs0->fetch_assoc();
+
+	$percent 	= $row['percent'];
+	$percent 	= round($percent,2);
+	$won 		= round($row['cost'],2);
+	$userid 	= $row['userid'];
 	
-	$rs1 = mysql_query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
-	$row = mysql_fetch_row($rs1);
-	$steamid = $row[0];
-	$name = $row[1];
-	$name=secureoutput($name);
-	$avatar = $row[2];
+	$rs1 = $conn->query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
+	$row = $rs1->fetch_assoc();
+
+	print_r($row);
+
+	$steamid 	= $row['steamid'];
+	$name 		= $row['name'];
+	$name 		= secureoutput($name);
+	$avatar 	= $row['avatar'];
 	
 		echo'     					
 			<div class="col-md-4 col-lg-4">
@@ -286,13 +295,14 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs1 = mysql_query("SELECT gameswon,steamid,name,avatar FROM `users` GROUP BY gameswon DESC LIMIT 1");						
-	$row = mysql_fetch_row($rs1);
-	$gw=$row[0];
-	$steamid = $row[1];
-	$name = $row[2];
-	$name=secureoutput($name);
-	$avatar	 = $row[3];
+	$rs1 = $conn->query("SELECT gameswon,steamid,name,avatar FROM `users` GROUP BY gameswon DESC LIMIT 1");						
+	$row = $rs1->fetch_assoc();
+
+	$gw 		= $row['gameswon'];
+	$steamid 	= $row['steamid'];
+	$name 		= $row['name'];
+	$name 		= secureoutput($name);
+	$avatar 	= $row['avatar'];
 	
 		echo'     					
 			<div class="col-md-4 col-lg-4">
@@ -305,13 +315,14 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs1 = mysql_query("SELECT games,steamid,name,avatar FROM `users` GROUP BY games DESC LIMIT 1");						
-	$row = mysql_fetch_row($rs1);
-	$gp=$row[0];
-	$steamid = $row[1];
-	$name = $row[2];
-	$name=secureoutput($name);
-	$avatar = $row[3];
+	$rs1 = $conn->query("SELECT games,steamid,name,avatar FROM `users` GROUP BY games DESC LIMIT 1");						
+	$row = $rs1->fetch_assoc();
+
+	$gp 	 	= $row['games'];
+	$steamid 	= $row['steamid'];
+	$name 		= $row['name'];
+	$name 		= secureoutput($name);
+	$avatar 	= $row['avatar'];
 
 		echo'     					
 			<div class="col-md-4 col-lg-4">
@@ -344,12 +355,20 @@ if($premium==1)
 
             <!-- Right Sidebar -->
             <div class="side-bar right-bar nicescroll">
-                <script>
-      var name = "<?php echo $steamprofile['personaname'] ?>";
-      var ava = "<?php echo $steamprofile['avatarfull'] ?>";
-      var id = "<?php echo $_SESSION['steamid'] ?>";
-      var color = "<?php echo 'FF0000' ?>";
-      var admin = "<?php echo $admin ?>";
+              <script>
+           	<?php if(isset($_SESSION["steamid"])) { ?>
+              	var name 	= "<?php echo $steamprofile['personaname'] ?>";
+			    var ava 	= "<?php echo $steamprofile['avatarfull'] ?>";
+			    var id 		= "<?php echo $_SESSION['steamid'] ?>";
+			    var color 	= "<?php echo 'FF0000' ?>";
+			    var admin 	= "<?php echo $admin ?>";
+			<?php } else { ?>
+              	var name 	= "";
+			    var ava 	= "";
+			    var id 		= "";
+			    var color 	= "<?php echo 'FF0000' ?>";
+			    var admin 	= "0";
+			<?php } ?>
 
       // display name on page
       $("#name-area").html("You are: <span>" + name + "</span>");

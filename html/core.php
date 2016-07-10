@@ -1,5 +1,5 @@
 <?php
-$title = "csgojackpotting.com"; // This will be the title of your site, also shown in the top left corner
+$title = "csgojackpot"; // This will be the title of your site, also shown in the top left corner
 
 $bot1id='76561198302742792'; // SteamID64 Which can be found at steamid.io
 $bot1url='https://steamcommunity.com/tradeoffer/new/?partner=342477064&token=1lha0QKf'; // Trade URL of your first bot
