@@ -4,8 +4,8 @@
 
 if(isset($_SESSION['steamid']))
 {
-	$rs = mysql_query("SELECT * FROM messages WHERE `userid` = '".$_SESSION['steamid']."' AND `active`='1'");
-	while($row = mysql_fetch_array($rs)) 
+	$rs = $conn->query("SELECT * FROM messages WHERE `userid` = '".$_SESSION['steamid']."' AND `active`='1'");
+	while($row = $rs->fetch_array()) 
 	{
 		$type = $row["type"];
 		$app = $row["app"];
@@ -23,7 +23,7 @@ if(isset($_SESSION['steamid']))
 						  swal('".$title."', '".$msg."');
 					</script>
 					";
-				mysql_query("UPDATE`messages` SET `active`='0' WHERE `ID`='".$row["ID"]."'");
+				$conn->query("UPDATE`messages` SET `active`='0' WHERE `ID`='".$row["ID"]."'");
 			}
 			if($app==0)
 			{
@@ -38,7 +38,7 @@ if(isset($_SESSION['steamid']))
 						 '".$msg."');
 						 </script>
 						 ";
-					 mysql_query("UPDATE`messages` SET `active`='0' WHERE `ID`='".$row["ID"]."'");
+					 $conn->query("UPDATE`messages` SET `active`='0' WHERE `ID`='".$row["ID"]."'");
 				}
 			}
 		}

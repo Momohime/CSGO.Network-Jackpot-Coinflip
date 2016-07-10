@@ -6,7 +6,7 @@ $lg=$cg-1;
 $lw = fetchinfo("userid","p2games","id",$lg);
 $cb = fetchinfo("cost","p2games","id",$lg);
 
-$rs = mysql_query("SELECT * FROM `p2game".$lg."` GROUP BY `userid` ORDER BY `id` DESC");
+$rs = $conn->query("SELECT * FROM `p2game".$lg."` GROUP BY `userid` ORDER BY `id` DESC");
 	$crs = "";
 	if(mysql_num_rows($rs) == 0) 
 	{
@@ -25,7 +25,7 @@ $rs = mysql_query("SELECT * FROM `p2game".$lg."` GROUP BY `userid` ORDER BY `id`
 					<tbody class="row lato">';
 
 		$usern=0;
-		while($row = mysql_fetch_array($rs))
+		while($row = $rs->fetch_array())
 		{
 			$usern++;
 			$ls++;
@@ -33,12 +33,12 @@ $rs = mysql_query("SELECT * FROM `p2game".$lg."` GROUP BY `userid` ORDER BY `id`
 			$userid = $row["userid"];
 			$username = fetchinfo("name","users","steamid",$userid);
 			$username=secureoutput($username);
-			$rs2 = mysql_query("SELECT SUM(value) AS value FROM `p2game".$lg."` WHERE `userid`='$userid'");						
+			$rs2 = $conn->query("SELECT SUM(value) AS value FROM `p2game".$lg."` WHERE `userid`='$userid'");						
 			$row = mysql_fetch_assoc($rs2);
 			$sumvalue = $row["value"];
 			$sumvalue=round($sumvalue,2);
 			
-			$rs3 = mysql_query("SELECT COUNT(value) AS items FROM `p2game".$lg."` WHERE `userid`='$userid'");						
+			$rs3 = $conn->query("SELECT COUNT(value) AS items FROM `p2game".$lg."` WHERE `userid`='$userid'");						
 			$rf = mysql_fetch_assoc($rs3);
 			$amount = $rf["items"];
 			
@@ -56,7 +56,7 @@ $rs = mysql_query("SELECT * FROM `p2game".$lg."` GROUP BY `userid` ORDER BY `id`
 			&emsp;
 		';
 		
-		$rs4 = mysql_query("SELECT * FROM `p2game".$lg."` WHERE `userid`='$userid' ORDER BY `value` DESC");
+		$rs4 = $conn->query("SELECT * FROM `p2game".$lg."` WHERE `userid`='$userid' ORDER BY `value` DESC");
 			while($row33 = mysql_fetch_array($rs4))
 			{
 				$szinkod='#'.$row33["color"];

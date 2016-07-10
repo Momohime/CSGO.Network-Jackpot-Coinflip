@@ -73,10 +73,10 @@ if(isset($_SESSION["steamid"]))
 								$items=mysql_escape_string($items);
 								$sum=mysql_escape_string($sum);
 								$token=mysql_escape_string($token);
-								mysql_query("INSERT INTO `cfqueue` (`userid`,`value`,`hash`,`token`,`skins`,`status`,`type`) VALUES ('$sid','$sum','$key','$token','$items','active','$lobbyid')") or die(mysql_error());
+								$conn->query("INSERT INTO `cfqueue` (`userid`,`value`,`hash`,`token`,`skins`,`status`,`type`) VALUES ('$sid','$sum','$key','$token','$items','active','$lobbyid')") or die(mysql_error());
 								$lastid=mysql_insert_id();
 								$newkey='l'.$lobbyid.'g'.$lastid.'h'.$key;
-								mysql_query("UPDATE `cfqueue` SET `hash`='$newkey' WHERE `id`='$lastid'");
+								$conn->query("UPDATE `cfqueue` SET `hash`='$newkey' WHERE `id`='$lastid'");
 								echo $newkey;
 							}
 							else

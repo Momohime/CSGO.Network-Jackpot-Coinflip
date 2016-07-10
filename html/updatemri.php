@@ -15,14 +15,14 @@ $prk = $_POST["mri"];
 
 if($prk)
 {
-	mysql_query("UPDATE info SET `value`='$prk' WHERE `name`='maxritem'");
+	$conn->query("UPDATE info SET `value`='$prk' WHERE `name`='maxritem'");
 }
 
 $prk2 = $_POST["mri2"];
 
 if($prk2)
 {
-	mysql_query("UPDATE p2info SET `value`='$prk2' WHERE `name`='maxritem'");
+	$conn->query("UPDATE p2info SET `value`='$prk2' WHERE `name`='maxritem'");
 }
 	
 

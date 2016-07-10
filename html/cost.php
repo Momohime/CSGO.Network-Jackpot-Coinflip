@@ -7,7 +7,7 @@ $hitem = str_replace("\'", "", $hitem);
 $hitem = str_replace(" ", "%20", $hitem);
 $hitem = str_replace("\\", "", $hitem);
 $mhitem=mysql_real_escape_string($hitem);
-$query = mysql_query("SELECT * FROM `items` WHERE `name`='$mhitem'");
+$query = $conn->query("SELECT * FROM `items` WHERE `name`='$mhitem'");
 $updateinterval=604800; // 7 days in seconds
 $time=time();
 $fetch=0;
@@ -71,7 +71,7 @@ if($fetch==1)
 		{
 			echo '<br> [DEBUG] Inserting new item into database';
 		}
-		mysql_query("INSERT INTO `items` (`name`,`cost`,`lastupdate`) VALUES ('$mhitem','$lowest_price','$time')");	
+		$conn->query("INSERT INTO `items` (`name`,`cost`,`lastupdate`) VALUES ('$mhitem','$lowest_price','$time')");	
 	}
 	else
 	{
@@ -81,8 +81,8 @@ if($fetch==1)
 			{
 				echo '<br> [DEBUG] Updating database: cost, lastupdate';
 			}
-			mysql_query("UPDATE items SET `cost`='$lowest_price' WHERE `name`='$mhitem'");
-			mysql_query("UPDATE items SET `lastupdate`='$time' WHERE `name`='$mhitem'");
+			$conn->query("UPDATE items SET `cost`='$lowest_price' WHERE `name`='$mhitem'");
+			$conn->query("UPDATE items SET `lastupdate`='$time' WHERE `name`='$mhitem'");
 		}
 		else
 		{
@@ -92,7 +92,7 @@ if($fetch==1)
 				{
 					echo '<br> [DEBUG] The price has not changed, updating `lastupdate` only';
 				}
-				mysql_query("UPDATE items SET `lastupdate`='$time' WHERE `name`='$mhitem'");
+				$conn->query("UPDATE items SET `lastupdate`='$time' WHERE `name`='$mhitem'");
 			}
 		}
 	}

@@ -26,7 +26,7 @@
 					<tbody class="row lato">';
 
 		$usern=0;
-		while($row = mysql_fetch_array($rs))
+		while($row = $rs->fetch_array())
 		{
 			$usern++;
 			$avatar = $row["avatar"];

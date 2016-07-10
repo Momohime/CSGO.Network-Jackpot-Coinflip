@@ -367,7 +367,7 @@
 										<tbody>
 									';
 									$rs = $conn->query("SELECT * FROM `cfwithdrawqueue` WHERE `userid`='$steamid' AND `status`='expired' OR `userid`='$steamid' AND `status`='active' ORDER BY `id` DESC");
-									while($row = mysql_fetch_array($rs))
+									while($row = $rs->fetch_array())
 									{
 										$wid=$row['id'];
 										$gid=$row['gameid'];

@@ -47,12 +47,12 @@ if($winningflip==1 && $flipchoice==1 || $winningflip==2 && $flipchoice==2) // Ho
 	{
 		$tradelink=fetchinfo("tlink","users","steamid",$creatorid);
 		$token = substr(strstr($tradelink, 'token='),6);
-		mysql_query("INSERT INTO `cfwithdrawqueue` (`userid`,`token`,`cofferid`,`pofferid`,`status`,`value`,`winner`,`gameid`) VALUES ('$creatorid','$token','$cofferid','$pofferid','active',$ovalue,'host','$id')");
+		$conn->query("INSERT INTO `cfwithdrawqueue` (`userid`,`token`,`cofferid`,`pofferid`,`status`,`value`,`winner`,`gameid`) VALUES ('$creatorid','$token','$cofferid','$pofferid','active',$ovalue,'host','$id')");
 		
-		mysql_query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('success','0','$creatorid','Congratulations!','You won $$wager on the Coinflip!','10',1,$time)");
-		mysql_query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('error','0','$participantid','Better Luck next time!','You lost $$wager on the Coinflip.','10',1,$time)");
-		mysql_query("UPDATE `cflobbies` SET `wid`='$creatorid' WHERE `id`='$id'");
-		mysql_query("UPDATE `cflobbies` SET `ended`='$otime' WHERE `id`='$id'");
+		$conn->query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('success','0','$creatorid','Congratulations!','You won $$wager on the Coinflip!','10',1,$time)");
+		$conn->query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('error','0','$participantid','Better Luck next time!','You lost $$wager on the Coinflip.','10',1,$time)");
+		$conn->query("UPDATE `cflobbies` SET `wid`='$creatorid' WHERE `id`='$id'");
+		$conn->query("UPDATE `cflobbies` SET `ended`='$otime' WHERE `id`='$id'");
 	}
 }
 else // Participant wins
@@ -62,12 +62,12 @@ else // Participant wins
 
 		$tradelink=fetchinfo("tlink","users","steamid",$participantid);
 		$token = substr(strstr($tradelink, 'token='),6);
-		mysql_query("INSERT INTO `cfwithdrawqueue` (`userid`,`token`,`cofferid`,`pofferid`,`status`,`value`,`winner`,`gameid`) VALUES ('$participantid','$token','$cofferid','$pofferid','active',$ovalue,'part','$id')");
+		$conn->query("INSERT INTO `cfwithdrawqueue` (`userid`,`token`,`cofferid`,`pofferid`,`status`,`value`,`winner`,`gameid`) VALUES ('$participantid','$token','$cofferid','$pofferid','active',$ovalue,'part','$id')");
 		
-		mysql_query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('success','0','$participantid','Congratulations!','You won $$wager on the Coinflip!','10',1,$time)");
-		mysql_query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('error','0','$creatorid','Better Luck next time!','You lost $$wager on the Coinflip.','10',1,$time)");
-		mysql_query("UPDATE `cflobbies` SET `wid`='$participantid' WHERE `id`='$id'");
-		mysql_query("UPDATE `cflobbies` SET `ended`='$otime' WHERE `id`='$id'");
+		$conn->query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('success','0','$participantid','Congratulations!','You won $$wager on the Coinflip!','10',1,$time)");
+		$conn->query("INSERT INTO `messages` (`type`,`app`,`userid`,`title`,`msg`,`time`,`active`,`delay`) VALUES ('error','0','$creatorid','Better Luck next time!','You lost $$wager on the Coinflip.','10',1,$time)");
+		$conn->query("UPDATE `cflobbies` SET `wid`='$participantid' WHERE `id`='$id'");
+		$conn->query("UPDATE `cflobbies` SET `ended`='$otime' WHERE `id`='$id'");
 	}
 }
 ?>

@@ -29,7 +29,7 @@ if(!isset($_SESSION['steamid']) || !$id || !is_numeric($id) || $pid)
 if(isset($_SESSION["steamid"]))
 {
 	$time = time();
-    mysql_query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
+    $conn->query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
 	$premium=fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
 	$banned=fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
 	$cbanned=fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
@@ -39,7 +39,7 @@ if(isset($_SESSION["steamid"]))
 	$name = mysql_real_escape_string($name);
 	if($name)
 	{
-		mysql_query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
+		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
 	}
 	if($banned==1)
 	{
@@ -66,9 +66,9 @@ if(isset($_SESSION["steamid"]))
 		}
 		else
 		{
-			mysql_query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
 		}
 	}
 	$cbanstring='';
@@ -101,9 +101,9 @@ if(isset($_SESSION["steamid"]))
 		}
 		else
 		{
-			mysql_query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
 		}
 	}
 }
@@ -115,8 +115,8 @@ if($premium==1)
 	if($puntil<=$time)
 	{
 		
-		mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
-		mysql_query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
+		$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
+		$conn->query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
 		
 	}
 }

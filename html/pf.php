@@ -283,8 +283,8 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 					$from=0;
 					$to=0;
 					
-					$rs = mysql_query("SELECT * FROM game".$hid	."");
-					while($grow = mysql_fetch_array($rs))
+					$rs = $conn->query("SELECT * FROM game".$hid	."");
+					while($grow = $rs->fetch_array())
 					{	
 						$from=$to;
 						$to+=$grow['value'];
@@ -292,8 +292,8 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 						{
 							$hwit=$grow['item'];
 							$hwc=$grow['value'];
-							$rs = mysql_query("SELECT SUM(value) AS ValueSum FROM `game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
-							$row = mysql_fetch_array($rs);
+							$rs = $conn->query("SELECT SUM(value) AS ValueSum FROM `game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
+							$row = $rs->fetch_array();
 							$wp = 100*$row["ValueSum"]/$hcost;
 							$wp=round($wp);
 						}
@@ -356,8 +356,8 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 					$from=0;
 					$to=0;
 					
-					$rs = mysql_query("SELECT * FROM p2game".$hid	."");
-					while($grow = mysql_fetch_array($rs))
+					$rs = $conn->query("SELECT * FROM p2game".$hid	."");
+					while($grow = $rs->fetch_array())
 					{	
 						$from=$to;
 						$to+=$grow['value'];
@@ -365,8 +365,8 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 						{
 							$hwit=$grow['item'];
 							$hwc=$grow['value'];
-							$rs = mysql_query("SELECT SUM(value) AS ValueSum FROM `p2game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
-							$row = mysql_fetch_array($rs);
+							$rs = $conn->query("SELECT SUM(value) AS ValueSum FROM `p2game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
+							$row = $rs->fetch_array();
 							$wp = 100*$row["ValueSum"]/$hcost;
 							$wp=round($wp);
 						}

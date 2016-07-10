@@ -34,11 +34,11 @@ if(!$banreason)
 $banby = fetchinfo("name","users","steamid",$_SESSION["steamid"]);
 
 
-mysql_query("UPDATE users SET `ban`='1' WHERE `steamid`='$banid'");
-mysql_query("UPDATE users SET `bandate`='$time' WHERE `steamid`='$banid'");
-mysql_query("UPDATE users SET `banend`='$bantime' WHERE `steamid`='$banid'");
-mysql_query("UPDATE users SET `banby`='$banby' WHERE `steamid`='$banid'");
-mysql_query("UPDATE users SET `banreason`='$banreason' WHERE `steamid`='$banid'");
+$conn->query("UPDATE users SET `ban`='1' WHERE `steamid`='$banid'");
+$conn->query("UPDATE users SET `bandate`='$time' WHERE `steamid`='$banid'");
+$conn->query("UPDATE users SET `banend`='$bantime' WHERE `steamid`='$banid'");
+$conn->query("UPDATE users SET `banby`='$banby' WHERE `steamid`='$banid'");
+$conn->query("UPDATE users SET `banreason`='$banreason' WHERE `steamid`='$banid'");
 
 
 

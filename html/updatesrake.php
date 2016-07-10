@@ -15,14 +15,14 @@ $srk = $_POST["srk"];
 
 if($srk)
 {
-	mysql_query("UPDATE info SET `value`='$srk' WHERE `name`='srake'");
+	$conn->query("UPDATE info SET `value`='$srk' WHERE `name`='srake'");
 }
 
 $srk2 = $_POST["srk2"];
 
 if($srk2)
 {
-	mysql_query("UPDATE p2info SET `value`='$srk2' WHERE `name`='srake'");
+	$conn->query("UPDATE p2info SET `value`='$srk2' WHERE `name`='srake'");
 }
 	
 if($srk)

@@ -7,7 +7,7 @@ $page="j2";
 if(isset($_SESSION["steamid"]))
 {
 	$time = time();
-    mysql_query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
+    $conn->query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
 	$premium=fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
 	$banned=fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
 	$cbanned=fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
@@ -17,7 +17,7 @@ if(isset($_SESSION["steamid"]))
 	$name = mysql_real_escape_string($name);
 	if($name)
 	{
-		mysql_query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
+		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
 	}
 	if($banned==1)
 	{
@@ -44,9 +44,9 @@ if(isset($_SESSION["steamid"]))
 		}
 		else
 		{
-			mysql_query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
 		}
 	}
 	$cbanstring='';
@@ -79,9 +79,9 @@ if(isset($_SESSION["steamid"]))
 		}
 		else
 		{
-			mysql_query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
 		}
 	}
 }
@@ -93,8 +93,8 @@ if($premium==1)
 	if($puntil<=$time)
 	{
 		
-		mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
-		mysql_query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
+		$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
+		$conn->query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
 		
 	}
 }
@@ -222,8 +222,8 @@ if($premium==1)
                                     <div class="text-right">
 									<?php
 									
-									 $result = mysql_query("SELECT id FROM p2games WHERE `starttime` > ".(time()-86400));
-									 $result2 = mysql_query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
+									 $result = $conn->query("SELECT id FROM p2games WHERE `starttime` > ".(time()-86400));
+									 $result2 = $conn->query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
 									 $rows=mysql_num_rows($result2);
 									  
 									?>
@@ -241,7 +241,7 @@ if($premium==1)
                                     </div>
                                     <div class="text-right">
 									<?php
-									 $result2 = mysql_query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
+									 $result2 = $conn->query("SELECT id FROM users WHERE `lastseen` > ".(time()-86400));
 									?>
                                         <h3 class="text-dark"><b class="counter"><?php echo mysql_num_rows($result); ?></b></h3>
                                         <p class="text-muted">Games Today</p>
@@ -257,7 +257,7 @@ if($premium==1)
                                     </div>
                                     <div class="text-right">
 									<?php
-										$result = mysql_query("SELECT * FROM p2games ORDER BY cost*1 DESC LIMIT 1");
+										$result = $conn->query("SELECT * FROM p2games ORDER BY cost*1 DESC LIMIT 1");
 										$row = mysql_fetch_assoc($result);
 										$maxcost =  $row["cost"];
 										$maxcost=round($maxcost,2);

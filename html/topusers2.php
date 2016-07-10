@@ -8,7 +8,7 @@ $page="j2";
 if(isset($_SESSION["steamid"]))
 {
 	$time = time();
-    mysql_query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
+    $conn->query("UPDATE users SET lastseen=".$time." WHERE steamid=".$_SESSION['steamid']."");
 	$premium=fetchinfo("premium","users","steamid",$_SESSION["steamid"]);
 	$banned=fetchinfo("ban","users","steamid",$_SESSION["steamid"]);
 	$cbanned=fetchinfo("cban","users","steamid",$_SESSION["steamid"]);
@@ -18,7 +18,7 @@ if(isset($_SESSION["steamid"]))
 	$name = mysql_real_escape_string($name);
 	if($name)
 	{
-		mysql_query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
+		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
 	}
 	if($banned==1)
 	{
@@ -45,9 +45,9 @@ if(isset($_SESSION["steamid"]))
 		}
 		else
 		{
-			mysql_query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `ban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `banend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `banreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
 		}
 	}
 	$cbanstring='';
@@ -80,9 +80,9 @@ if(isset($_SESSION["steamid"]))
 		}
 		else
 		{
-			mysql_query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
-			mysql_query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cban`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cbanend`='0' WHERE `steamid`='".$_SESSION["steamid"]."'");
+			$conn->query("UPDATE `users` SET `cbanreason`='' WHERE `steamid`='".$_SESSION["steamid"]."'");
 		}
 	}
 }
@@ -94,8 +94,8 @@ if($premium==1)
 	if($puntil<=$time)
 	{
 		
-		mysql_query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
-		mysql_query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
+		$conn->query("UPDATE users SET `premium`='0' WHERE `steamid`='$id'");
+		$conn->query("UPDATE users SET `profile`='1' WHERE `steamid`='$id'");
 		
 	}
 }
@@ -200,7 +200,7 @@ if($premium==1)
      				<div class="row">
 <?php
 
-	$rs1 = mysql_query("SELECT profit,steamid,name,avatar FROM `users` GROUP BY profit DESC LIMIT 1");						
+	$rs1 = $conn->query("SELECT profit,steamid,name,avatar FROM `users` GROUP BY profit DESC LIMIT 1");						
 	$row = mysql_fetch_row($rs1);
 	$profit = round($row[0],2);
 	$steamid = $row[1];
@@ -219,7 +219,7 @@ if($premium==1)
 			</div>
 		';
 
-	$rs1 = mysql_query("SELECT won,steamid,name,avatar FROM `users` GROUP BY won DESC LIMIT 1");						
+	$rs1 = $conn->query("SELECT won,steamid,name,avatar FROM `users` GROUP BY won DESC LIMIT 1");						
 	$row = mysql_fetch_row($rs1);
 	$won = round($row[0],2);
 	$steamid = $row[1];
@@ -238,12 +238,12 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs0 = mysql_query("SELECT cost,userid FROM `p2games` ORDER BY cost DESC");	
+	$rs0 = $conn->query("SELECT cost,userid FROM `p2games` ORDER BY cost DESC");	
 	$row = mysql_fetch_row($rs0);
 	$won=round($row[0],2);
 	$userid=$row[1];
 	
-	$rs1 = mysql_query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
+	$rs1 = $conn->query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
 	$row = mysql_fetch_row($rs1);
 	$steamid = $row[0];
 	$name = $row[1];
@@ -261,14 +261,14 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs0 = mysql_query("SELECT percent,cost,userid FROM `p2games` WHERE percent!='' ORDER BY `percent` ASC");						
+	$rs0 = $conn->query("SELECT percent,cost,userid FROM `p2games` WHERE percent!='' ORDER BY `percent` ASC");						
 	$row = mysql_fetch_row($rs0);
 	$percent=$row[0];
 	$percent=round($percent,2);
 	$won=round($row[1],2);
 	$userid=$row[2];
 	
-	$rs1 = mysql_query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
+	$rs1 = $conn->query("SELECT steamid,name,avatar FROM `users` WHERE `steamid`='$userid'");						
 	$row = mysql_fetch_row($rs1);
 	$steamid = $row[0];
 	$name = $row[1];
@@ -286,7 +286,7 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs1 = mysql_query("SELECT gameswon,steamid,name,avatar FROM `users` GROUP BY gameswon DESC LIMIT 1");						
+	$rs1 = $conn->query("SELECT gameswon,steamid,name,avatar FROM `users` GROUP BY gameswon DESC LIMIT 1");						
 	$row = mysql_fetch_row($rs1);
 	$gw=$row[0];
 	$steamid = $row[1];
@@ -305,7 +305,7 @@ if($premium==1)
 			</div>
 		';
 		
-	$rs1 = mysql_query("SELECT games,steamid,name,avatar FROM `users` GROUP BY games DESC LIMIT 1");						
+	$rs1 = $conn->query("SELECT games,steamid,name,avatar FROM `users` GROUP BY games DESC LIMIT 1");						
 	$row = mysql_fetch_row($rs1);
 	$gp=$row[0];
 	$steamid = $row[1];

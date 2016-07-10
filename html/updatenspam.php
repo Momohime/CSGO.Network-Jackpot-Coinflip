@@ -14,7 +14,7 @@ if($admin==0)
 $srk = $_POST["nm"];
 
 
-mysql_query("UPDATE info SET `value`='$srk' WHERE `name`='nmsg'");
+$conn->query("UPDATE info SET `value`='$srk' WHERE `name`='nmsg'");
 	
 
 Header("Location: achat.php");
