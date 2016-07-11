@@ -8,7 +8,7 @@ if(!isset($_SESSION["steamid"])) {
 
 $myemail = fetchinfo("email","users","steamid",$_SESSION["steamid"]);
 $newemail = $_POST["link"];
-$newemail = mysql_real_escape_string($newemail);
+$newemail = $conn->real_escape_string(($newemail);
 $steam = $_SESSION["steamid"];
 if(filter_var($newemail, FILTER_VALIDATE_EMAIL))
 {

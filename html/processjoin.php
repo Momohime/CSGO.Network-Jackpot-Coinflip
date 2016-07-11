@@ -26,7 +26,7 @@ if(isset($_SESSION["steamid"]))
 
 		
 		$lobbyid = $_POST[0];
-		$lobbyid=mysql_escape_string($lobbyid);
+		$lobbyid=$conn->escape_string(($lobbyid);
 		$gap=fetchinfo("gap","cflobbies","ID",$lobbyid);
 		$value=fetchinfo("value","cflobbies","ID",$lobbyid);
 		$valuemin=$value-$gap;
@@ -70,9 +70,9 @@ if(isset($_SESSION["steamid"]))
 						{	
 							if($cid!=$sid)
 							{
-								$items=mysql_escape_string($items);
-								$sum=mysql_escape_string($sum);
-								$token=mysql_escape_string($token);
+								$items=$conn->escape_string(($items);
+								$sum=$conn->escape_string(($sum);
+								$token=$conn->escape_string(($token);
 								$conn->query("INSERT INTO `cfqueue` (`userid`,`value`,`hash`,`token`,`skins`,`status`,`type`) VALUES ('$sid','$sum','$key','$token','$items','active','$lobbyid')") or die(mysql_error());
 								$lastid=mysql_insert_id();
 								$newkey='l'.$lobbyid.'g'.$lastid.'h'.$key;

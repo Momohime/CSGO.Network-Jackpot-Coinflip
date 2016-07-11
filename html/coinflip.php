@@ -271,7 +271,7 @@
 													$pid=$row['cid'];
 													$pav=fetchinfo("avatar","users","steamid",$pid);
 													$pname=fetchinfo("name","users","steamid",$pid);
-													$pname=mysql_escape_string($pname);
+													$pname=$conn->escape_string(($pname);
 													$pname=htmlentities(strip_tags($pname));
 													$wager=$row['value'];
 													$gap=$row['gap'];
@@ -323,7 +323,7 @@
 							if(isset($_GET['resend']))
 							{
 								$rid=$_GET['resend'];
-								$rid=mysql_escape_string($rid);
+								$rid=$conn->escape_string(($rid);
 								if(is_numeric($rid))
 								{
 									echo"

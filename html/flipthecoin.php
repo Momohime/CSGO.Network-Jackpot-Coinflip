@@ -13,7 +13,7 @@ if(!isset($_GET) or !isset($_GET["id"]) or !is_numeric($_GET["id"]))
 	die();
 }
 $id=$_GET['id'];
-$id=mysql_escape_string($id);
+$id=$conn->escape_string(($id);
 $time=time();
 $creatorid=fetchinfo("cid","cflobbies","id",$id);
 $creatorname=fetchinfo("name","users","steamid",$creatorid);

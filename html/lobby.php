@@ -14,7 +14,7 @@ if(isset($_SESSION["steamid"]))
 	$mytrade = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
 	$admin = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
 	$name=$steamprofile['personaname'];
-	$name = mysql_real_escape_string($name);
+	$name = $conn->real_escape_string(($name);
 	if($name)
 	{
 		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");
@@ -100,7 +100,7 @@ if($premium==1)
 }
 
 $id=$_GET['id'];
-$id=mysql_real_escape_string($id);
+$id=$conn->real_escape_string(($id);
 $creatorid=fetchinfo("cid","cflobbies","ID",$id);
 $creatorname=fetchinfo("name","users","steamid",$creatorid);
 $creatoravatar=fetchinfo("avatar","users","steamid",$creatorid);
@@ -112,10 +112,10 @@ $participantid=fetchinfo("pid","cflobbies","ID",$id);
 $participantname=fetchinfo("name","users","steamid",$participantid);
 $participantavatar=fetchinfo("avatar","users","steamid",$participantid);
 
-$participantname=mysql_escape_string($participantname);
+$participantname=$conn->escape_string(($participantname);
 $participantname=htmlentities(strip_tags($participantname));
 
-$creatorname=mysql_escape_string($creatorname);
+$creatorname=$conn->escape_string(($creatorname);
 $creatorname=htmlentities(strip_tags($creatorname));
 
 if(!$participantid)

@@ -17,7 +17,7 @@ if(isset($_SESSION['steamid']))
 		{
 			if($app==1)
 			{
-				$msg=mysql_real_escape_string($msg);
+				$msg=$conn->real_escape_string(($msg);
 				echo"
 					<script>
 						  swal('".$title."', '".$msg."');

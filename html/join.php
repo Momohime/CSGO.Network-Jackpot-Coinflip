@@ -6,7 +6,7 @@ require_once('steamauth/steamauth.php');
 @include_once('steamauth/userInfo.php');
 $page="cf";
 $id=$_GET['id'];
-$id=mysql_escape_string($id);
+$id=$conn->escape_string(($id);
 $gap=fetchinfo("gap","cflobbies","ID",$id);
 $flip=fetchinfo("flip","cflobbies","ID",$id);
 $value=fetchinfo("value","cflobbies","ID",$id);
@@ -36,7 +36,7 @@ if(isset($_SESSION["steamid"]))
 	$mytrade = fetchinfo("tlink","users","steamid",$_SESSION["steamid"]);
 	$admin = fetchinfo("admin","users","steamid",$_SESSION["steamid"]);
 	$name=$steamprofile['personaname'];
-	$name = mysql_real_escape_string($name);
+	$name = $conn->real_escape_string(($name);
 	if($name)
 	{
 		$conn->query("UPDATE `users` SET `name`='".$name."', `avatar`='".$steamprofile['avatarfull']."' WHERE `steamid`='".$_SESSION["steamid"]."'");

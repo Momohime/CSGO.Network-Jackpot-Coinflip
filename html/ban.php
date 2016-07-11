@@ -26,7 +26,7 @@ if($bantime!=-1)
 	$bantime=$time+$bantime;
 }
 $banreason = $_POST["br"];
-$banreason = mysql_real_escape_string($banreason);
+$banreason = $conn->real_escape_string(($banreason);
 if(!$banreason)
 {
 	$banreason="No reason given";

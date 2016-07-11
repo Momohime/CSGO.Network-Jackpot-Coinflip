@@ -57,7 +57,7 @@ while($grow = $rs->fetch_array())
 	{
 		echo'&emsp; Winner!';
 		$winnerid=$grow['userid'];
-		$winnername = mysql_real_escape_string($grow['username']);
+		$winnername = $conn->real_escape_string(($grow['username']);
 		
 		$rs = $conn->query("SELECT SUM(value) AS ValueSum FROM `".$p2t."game$cg` WHERE `userid`='$winnerid'") or die(logsqlerror(mysql_error()));
 		$row = $rs->fetch_array();
@@ -116,7 +116,7 @@ $rs = $conn->query("SELECT item,value,userid,assetid,id FROM `".$p2t."game$cg`")
 $ila = 0;
 while($row = $rs->fetch_array())
 {
-	$itemsar[$ila] = mysql_escape_string($row["item"]);
+	$itemsar[$ila] = $conn->escape_string(($row["item"]);
 	$valuear[$ila] = $row["value"];
 	$userar[$ila] = $row["userid"];
 	$assetid[$ila] = $row["assetid"];

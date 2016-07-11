@@ -22,10 +22,10 @@ $rake=($wager*2)/$rakepercent;
 $rake=floor($rake);
 $win=($wager*2)-$rake;
 
-$participantname=mysql_escape_string($participantname);
+$participantname=$conn->escape_string(($participantname);
 $participantname=htmlentities(strip_tags($participantname));
 
-$creatorname=mysql_escape_string($creatorname);
+$creatorname=$conn->escape_string(($creatorname);
 $creatorname=htmlentities(strip_tags($creatorname));
 
 if(!$creatorid || !$participantid) // no lobby

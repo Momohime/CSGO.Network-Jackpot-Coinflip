@@ -3,7 +3,7 @@ session_start();
 include_once("link.php");
 $id=$_GET['id'];
 $id = preg_replace('~[\r\n]+~', '', $id);
-$id=mysql_real_escape_string($id);
+$id=$conn->real_escape_string(($id);
 $id=trim($id);
 
 if(!$id)
@@ -14,7 +14,7 @@ if(!$id)
 $pid=fetchinfo("cid","cflobbies","ID",$id);
 $pav=fetchinfo("avatar","users","steamid",$pid);
 $pname=fetchinfo("name","users","steamid",$pid);
-$pname=mysql_escape_string($pname);
+$pname=$conn->escape_string(($pname);
 $pname=htmlentities(strip_tags($pname));
 $wager=fetchinfo("value","cflobbies","ID",$id);
 $gap=fetchinfo("gap","cflobbies","ID",$id);

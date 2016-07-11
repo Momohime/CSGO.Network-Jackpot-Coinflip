@@ -255,13 +255,13 @@
 													$hid=$row['cid'];
 													$hav=fetchinfo("avatar","users","steamid",$hid);
 													$hname=fetchinfo("name","users","steamid",$hid);
-													$hname=mysql_escape_string($hname);
+													$hname=$conn->escape_string(($hname);
 													$hname=htmlentities(strip_tags($hname));
 													
 													$pid=$row['pid'];
 													$pav=fetchinfo("avatar","users","steamid",$pid);
 													$pname=fetchinfo("name","users","steamid",$pid);
-													$pname=mysql_escape_string($pname);
+													$pname=$conn->escape_string(($pname);
 													$pname=htmlentities(strip_tags($pname));
 													
 													$hwager=$row['value'];
