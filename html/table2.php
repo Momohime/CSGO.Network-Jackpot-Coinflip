@@ -1,18 +1,19 @@
 <?php
-@include_once('link.php');
-@include_once('steamauth/steamauth.php');
-$cg = fetchinfo("value","p2info","name","current_game");
-$cb = fetchinfo("cost","p2games","id",$cg);
+	@include_once('link.php');
+	@include_once('steamauth/steamauth.php');
 
-$ms = fetchinfo("value","p2info","name","maxritem");
-$cs = fetchinfo("itemsnum","p2games","id",$cg);
+	$cg = fetchinfo("value","p2info","name","current_game");
+	$cb = fetchinfo("cost","p2games","id",$cg);
 
-$percent = $cs / $ms *100;
-	
+	$ms = fetchinfo("value","p2info","name","maxritem");
+	$cs = fetchinfo("itemsnum","p2games","id",$cg);
+
+	$percent = $cs / $ms *100;
+
 	$rs = $conn->query("SELECT * FROM `p2game".$cg."` GROUP BY `userid` ORDER BY `id` DESC");
 	$crs = "";
-	if(mysql_num_rows($rs) == 0) 
-	{
+
+	if($rs->num_rows == 0)  {
 		/*$lg=$cg-1;
 		$lw = fetchinfo("winner","games","id",$lg);
 		$ld = fetchinfo("userid","games","id",$lg);
@@ -21,31 +22,29 @@ $percent = $cs / $ms *100;
 		$lc = fetchinfo("cost","games","id",$lg);
 		$la = fetchinfo("avatar","users","steamid",$ld);*/
 
-	} 
-	else
-	{
-		$crs.='<table class="table winnertable" style="width:100%; margin: 0 auto;">
+	} else {
+		$crs.=' <table class="table winnertable" style="width:100%; margin: 0 auto;">
 					<tbody class="row lato">';
 
 		$usern=0;
-		while($row = $rs->fetch_array())
-		{
+		while($row = $rs->fetch_array()) {
 			$usern++;
 			$ls++;
-			$avatar = $row["avatar"];
-			$userid = $row["userid"];
-			$username = fetchinfo("name","users","steamid",$userid);
-			$username=secureoutput($username);
+			$avatar 	= $row["avatar"];
+			$userid 	= $row["userid"];
+			$username 	= fetchinfo("name","users","steamid",$userid);
+			$username 	= secureoutput($username);
+
 			$rs2 = $conn->query("SELECT SUM(value) AS value FROM `p2game".$cg."` WHERE `userid`='$userid'");						
-			$row = mysql_fetch_assoc($rs2);
+			$row = $rs2->fetch_assoc();
 			$sumvalue = $row["value"];
-			$sumvalue=round($sumvalue,2);
+			$sumvalue = round($sumvalue,2);
 			
-			$rs3 = $conn->query("SELECT COUNT(value) AS items FROM `p2game".$cg."` WHERE `userid`='$userid'");						
-			$rf = mysql_fetch_assoc($rs3);
+			$rs3 	= $conn->query("SELECT COUNT(value) AS items FROM `p2game".$cg."` WHERE `userid`='$userid'");						
+			$rf 	= $rs3->fetch_assoc();
 			$amount = $rf["items"];
 			
-			$chance=round(100*$sumvalue/$cb,1);
+			$chance = round(100*$sumvalue/$cb,1);
 			
 			$crs .= '
 			<tr class="" style="text-align: left; vertical-align: middle;">
@@ -54,8 +53,7 @@ $percent = $cs / $ms *100;
 		';
 		
 		$rs4 = $conn->query("SELECT * FROM `p2game".$cg."` WHERE `userid`='$userid' ORDER BY `value` DESC");
-			while($row33 = mysql_fetch_array($rs4))
-			{
+			while($row33 = $rs4->fetch_arary()) {
 				$szinkod='#'.$row33["color"];
 				$itemname=$row33["item"];
 				$value=$row33['value'];
@@ -65,21 +63,11 @@ $percent = $cs / $ms *100;
 						</span>
 				
 				';
-				
-			
 			}
 			$crs.='</td></tr>';
-		
-			
-			
 		}
 		$crs.='	</tbody>
 				</table>';
-
 	}
 	echo $crs;
-
-
-
-
 ?>

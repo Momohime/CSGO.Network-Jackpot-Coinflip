@@ -364,27 +364,27 @@ $return=$_SERVER['HTTP_REFERER'];
 		$steamid=$_SESSION['steamid'];
 		echo '<div class="container1">';
 		//$prices1 = file_get_contents('prices.txt');
-        $prices = file_get_contents('https://api.csgofast.com/price/all');
-        $parsedPrices = json_decode($prices);
-        $get_content = file_get_contents("http://steamcommunity.com/profiles/$steamid/inventory/json/730/2/");
-        $parsedInv = json_decode($get_content);
-        $parsedInvT = json_decode($get_content);
-        $counter = 0;
-        $mindeposit = 0.2;
+        $prices 		= file_get_contents('https://api.csgofast.com/price/all');
+        $parsedPrices 	= json_decode($prices);
+        $get_content 	= file_get_contents("http://steamcommunity.com/profiles/$steamid/inventory/json/730/2/");
+        $parsedInv 		= json_decode($get_content);
+        $parsedInvT 	= json_decode($get_content);
+        $counter 		= 0;
+        $mindeposit 	= 0.2;
         echo '<span id="noitems"></span>';
 		foreach($parsedInv->rgInventory as $k => $v){
-			$id = $v->id;
-            $iid = $v->instanceid;
-            $cid = $v->classid;
-            $key = $cid."_".$iid;
-            $t = $parsedInvT->rgDescriptions->$key->tradable;
-			if($t==1)
-			{				
+			$id 	= $v->id;
+            $iid 	= $v->instanceid;
+            $cid 	= $v->classid;
+            $key 	= $cid."_".$iid;
+            $t 		= $parsedInvT->rgDescriptions->$key->tradable;
+
+			if($t==1) {
 				$name = $parsedInvT->rgDescriptions->$key->market_hash_name;
-            $price = $parsedPrices->$name;
-            $img = $parsedInvT->rgDescriptions->$key->icon_url;
-			if($t && $price && $price >= $mindeposit) 
-			{
+				$price = $parsedPrices->$name;
+				$img = $parsedInvT->rgDescriptions->$key->icon_url;
+
+				if($t && $price && $price >= $mindeposit) {
 					echo'<div class="item-card__wrapper item '.$id.'">
                 
                     <div class=" item-card steam-quality-baseGrade steam-appid-730">

@@ -1,5 +1,5 @@
   <?php
-  error_reporting(0);
+  
 include ('link.php');
 include ('core.php');
 require_once('steamauth/steamauth.php');

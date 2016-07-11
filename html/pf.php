@@ -249,7 +249,7 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 	if(isset($_GET["action"]))	
 	if($_GET["action"] == "verify") {
 		$rh = $_GET["id"];
-		$rh=mysql_real_escape_string($rh);
+		$rh= $conn->real_escape_string($rh);
 	}
 		echo '<form class="form-inline" method="post" action="pf.php">
 			<div class="form-group">
@@ -290,12 +290,13 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 						$to+=$grow['value'];
 						if($hti>=$from && $hti<=$to)
 						{
-							$hwit=$grow['item'];
-							$hwc=$grow['value'];
-							$rs = $conn->query("SELECT SUM(value) AS ValueSum FROM `game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
-							$row = $rs->fetch_array();
-							$wp = 100*$row["ValueSum"]/$hcost;
-							$wp=round($wp);
+							$hwit 	= $grow['item'];
+							$hwc 	= $grow['value'];
+
+							$rs 	= $conn->query("SELECT SUM(value) AS ValueSum FROM `game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
+							$row 	= $rs->fetch_array();
+							$wp 	= 100*$row["ValueSum"]/$hcost;
+							$wp 	= round($wp);
 						}
 					}
 					
@@ -363,12 +364,12 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 						$to+=$grow['value'];
 						if($hti>=$from && $hti<=$to)
 						{
-							$hwit=$grow['item'];
-							$hwc=$grow['value'];
-							$rs = $conn->query("SELECT SUM(value) AS ValueSum FROM `p2game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
-							$row = $rs->fetch_array();
-							$wp = 100*$row["ValueSum"]/$hcost;
-							$wp=round($wp);
+							$hwit 	= $grow['item'];
+							$hwc 	= $grow['value'];
+							$rs 	= $conn->query("SELECT SUM(value) AS ValueSum FROM `p2game$hid` WHERE `userid`='$hwid'") or die(logsqlerror(mysql_error()));
+							$row 	= $rs->fetch_array();
+							$wp 	= 100*$row["ValueSum"]/$hcost;
+							$wp 	= round($wp);
 						}
 					}
 					
@@ -427,12 +428,20 @@ You can purchase this script on <a href="http://csgo.network">csgo.network</a> a
 
             <!-- Right Sidebar -->
             <div class="side-bar right-bar nicescroll">
-                <script>
-      var name = "<?php echo $steamprofile['personaname'] ?>";
-      var ava = "<?php echo $steamprofile['avatarfull'] ?>";
-      var id = "<?php echo $_SESSION['steamid'] ?>";
-      var color = "<?php echo 'FF0000' ?>";
-      var admin = "<?php echo $admin ?>";
+              <script>
+           	<?php if(isset($_SESSION["steamid"])) { ?>
+              	var name 	= "<?php echo $steamprofile['personaname'] ?>";
+			    var ava 	= "<?php echo $steamprofile['avatarfull'] ?>";
+			    var id 		= "<?php echo $_SESSION['steamid'] ?>";
+			    var color 	= "<?php echo 'FF0000' ?>";
+			    var admin 	= "<?php echo $admin ?>";
+			<?php } else { ?>
+              	var name 	= "";
+			    var ava 	= "";
+			    var id 		= "";
+			    var color 	= "<?php echo 'FF0000' ?>";
+			    var admin 	= "0";
+			<?php } ?>
 
       // display name on page
       $("#name-area").html("You are: <span>" + name + "</span>");

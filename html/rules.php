@@ -236,12 +236,20 @@ The jackpot winner will receive the jackpot VIA a steam offer. (MAX 15 minutes a
 
             <!-- Right Sidebar -->
             <div class="side-bar right-bar nicescroll">
-                <script>
-      var name = "<?php echo $steamprofile['personaname'] ?>";
-      var ava = "<?php echo $steamprofile['avatarfull'] ?>";
-      var id = "<?php echo $_SESSION['steamid'] ?>";
-      var color = "<?php echo 'FF0000' ?>";
-      var admin = "<?php echo $admin ?>";
+              <script>
+            <?php if(isset($_SESSION["steamid"])) { ?>
+                var name  = "<?php echo $steamprofile['personaname'] ?>";
+          var ava   = "<?php echo $steamprofile['avatarfull'] ?>";
+          var id    = "<?php echo $_SESSION['steamid'] ?>";
+          var color   = "<?php echo 'FF0000' ?>";
+          var admin   = "<?php echo $admin ?>";
+      <?php } else { ?>
+                var name  = "";
+          var ava   = "";
+          var id    = "";
+          var color   = "<?php echo 'FF0000' ?>";
+          var admin   = "0";
+      <?php } ?>
 
       // display name on page
       $("#name-area").html("You are: <span>" + name + "</span>");

@@ -231,7 +231,7 @@
 
 
                                         <tbody>';
-										$rs = $conn->query("SELECT * FROM `games` WHERE `ID`<$cg");
+										$rs = $conn->query("SELECT * FROM `games` ORDER BY id DESC");
 										while($row = $rs->fetch_array())
 										{
 											$winner=$row['winner'];
